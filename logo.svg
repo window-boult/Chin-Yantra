@@ -1,9 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
-<title id="title">Chin Yantra logo</title><desc id="desc">A green leaf with an orange circuit accent, representing learning and technology.</desc>
-<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f9158"/><stop offset="1" stop-color="#145638"/></linearGradient></defs>
-<rect x="5" y="5" width="118" height="118" rx="34" fill="#fff9e9"/>
-<path d="M91 24C52 23 27 43 29 72c1 19 18 31 34 24 22-10 24-43 28-72Z" fill="url(#g)"/>
-<path d="M28 101C44 78 62 59 88 37" fill="none" stroke="#fff9e9" stroke-width="6" stroke-linecap="round"/>
-<path d="M79 91h15v-9h10" fill="none" stroke="#ef8a2f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="108" cy="82" r="5" fill="#ef8a2f"/>
+<CodeBlock language="xml" editable>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#27834f"/>
+      <stop offset="1" stop-color="#103e2c"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="34" fill="url(#g)"/>
+  <path d="M64 15v15" stroke="#f39a38" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="64" cy="13" r="7" fill="#f39a38"/>
+  <rect x="23" y="35" width="82" height="59" rx="21" fill="#e9f8e9" stroke="#f39a38" stroke-width="5"/>
+  <rect x="31" y="45" width="66" height="40" rx="14" fill="#173c32"/>
+  <circle cx="49" cy="62" r="7" fill="#baf3cf"/>
+  <circle cx="79" cy="62" r="7" fill="#baf3cf"/>
+  <path d="M53 75q11 10 22 0" fill="none" stroke="#f39a38" stroke-width="4" stroke-linecap="round"/>
+  <path d="M64 98v7" stroke="#e9f8e9" stroke-width="7" stroke-linecap="round"/>
+  <path d="M48 108h32" stroke="#e9f8e9" stroke-width="8" stroke-linecap="round"/>
+  <path d="M64 7c-8 9-8 17 0 22 8-5 8-13 0-22z" fill="#f39a38"/>
 </svg>
+</CodeBlock>
