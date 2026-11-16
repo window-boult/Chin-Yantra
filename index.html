@@ -1,75 +1,225 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#176b45"><meta name="description" content="Chinmaya AI — a friendly school learning companion">
-  <title>CHINMAYA AI · Chin Yantra</title><link rel="stylesheet" href="style.css">
-  <script src="config.js"></script><script defer src="app.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123d2b">
+  <meta name="description" content="Chinmaya AI — Your intelligent school learning companion.">
+  <title>Chinmaya AI | Your School Companion</title>
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <script src="config.js" defer></script>
+  <script src="app.js" defer></script>
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <a class="brand" href="#" aria-label="CHINMAYA AI home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 40C9 32 8 18 20 8c1 8 5 11 7 13 1-7 6-11 10-13 5 14-1 27-13 32Z" fill="currentColor"/><path d="M14 31c8-2 15-8 21-16" fill="none" stroke="#fff3d8" stroke-width="2.5" stroke-linecap="round"/></svg></span><span><strong>CHINMAYA <b>AI</b></strong><small>LEARN · EXPLORE · CREATE</small></span></a>
-      <div class="header-status"><span class="status-dot"></span><span id="headerStatus">Ready to learn</span></div>
-      <div class="header-actions"><button class="icon-button" id="voiceToggle" title="Toggle voice output" aria-label="Toggle voice output">🔊</button><button class="button button-outline" id="teacherLoginOpen">♧ Teacher login</button></div>
+      <a class="brand" href="#" aria-label="Chinmaya AI home">
+        <img src="logo.svg" alt="" class="brand-logo">
+        <span><strong>CHINMAYA</strong><small>AI LEARNING COMPANION</small></span>
+      </a>
+      <div class="top-actions">
+        <span class="status-pill"><i></i> AI READY</span>
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">☼</button>
+        <button class="teacher-button" id="teacherOpenBtn">Teacher Portal</button>
+      </div>
     </header>
 
-    <main>
-      <section class="hero-grid">
-        <div class="welcome-panel">
-          <div class="welcome-copy"><span class="eyebrow">A LITTLE SMARTER, EVERY DAY</span><h2>Your ideas.<br><span>Infinite possibilities.</span></h2><p>Ask big questions, untangle tricky topics, and build something brilliant — one curious thought at a time.</p></div>
-          <div class="quick-stats"><div><span class="stat-icon green-icon">✳</span><strong>8</strong><small>Learning worlds</small></div><div><span class="stat-icon orange-icon">⌁</span><strong>24/7</strong><small>Curiosity mode</small></div><div><span class="stat-icon green-icon">♧</span><strong>1</strong><small>Planet to protect</small></div></div>
-          <div class="welcome-decoration deco-leaf">✦</div><div class="welcome-decoration deco-ring"></div>
+    <main class="main-layout">
+      <aside class="robot-panel">
+        <div class="panel-heading">
+          <span class="eyebrow">YOUR AI COMPANION</span>
+          <span class="live-dot">● ONLINE</span>
         </div>
-      </section>
-
-      <section class="subjects-section"><div class="section-heading"><div><span class="eyebrow">PICK YOUR PATH</span><h2>What are we exploring?</h2></div><span class="section-note">Choose a subject to personalise your AI buddy</span></div><div class="subject-grid" id="subjectGrid" aria-label="Learning subjects"></div></section>
-
-      <section class="workspace-grid">
-        <div class="robot-card panel">
-          <div class="robot-orbit orbit-one"></div><div class="robot-orbit orbit-two"></div>
-          <div class="robot-badge"><span class="status-dot"></span><span id="robotStatus">Your learning buddy</span></div>
-          <div class="robot-stage" id="robotStage" data-expression="idle" aria-label="Animated robot Chin Yantra">
-            <div class="robot-shadow"></div>
+        <div class="robot-stage">
+          <div class="robot-glow"></div>
+          <div class="robot" id="robot">
             <div class="robot-antenna"><span></span></div>
+            <div class="robot-ear left"></div>
+            <div class="robot-ear right"></div>
             <div class="robot-head">
-              <div class="ear ear-left"><i></i></div><div class="ear ear-right"><i></i></div>
-              <div class="head-panel"><span class="head-screw screw-left"></span><span class="head-screw screw-right"></span></div>
-              <div class="brow brow-left"></div><div class="brow brow-right"></div>
-              <div class="eye eye-left"><span class="pupil"></span><i class="eye-shine"></i></div><div class="eye eye-right"><span class="pupil"></span><i class="eye-shine"></i></div>
-              <div class="nose"></div><div class="cheek cheek-left"></div><div class="cheek cheek-right"></div><div class="mouth"><span></span></div>
-              <div class="leaf-emblem"><svg viewBox="0 0 32 32"><path d="M26 5C12 5 5 11 6 20c1 5 6 7 10 4 7-4 8-12 10-19Z" fill="currentColor"/><path d="M7 27C12 19 17 15 24 9" fill="none" stroke="#fff3d8" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <div class="robot-leaf">✦</div>
+              <div class="robot-face">
+                <div class="robot-eyes">
+                  <span class="eye"><i class="pupil"></i></span>
+                  <span class="eye"><i class="pupil"></i></span>
+                </div>
+                <div class="robot-mouth" id="robotMouth"></div>
+              </div>
+              <div class="robot-cheek left"></div>
+              <div class="robot-cheek right"></div>
             </div>
-            <div class="robot-neck"></div><div class="robot-body"><div class="body-shoulder shoulder-left"></div><div class="body-shoulder shoulder-right"></div><div class="chest-panel"><span class="chest-light"></span><span class="chest-light"></span><span class="chest-light"></span><div class="chest-leaf">✦</div></div><div class="arm arm-left"></div><div class="arm arm-right"></div><div class="hand hand-left"></div><div class="hand hand-right"></div></div>
+            <div class="robot-neck"></div>
+            <div class="robot-body">
+              <div class="body-leaf">🌿</div>
+              <div class="body-label">CHIN YANTRA</div>
+              <div class="body-light"></div>
+            </div>
+            <div class="robot-arm left"></div>
+            <div class="robot-arm right"></div>
+            <div class="robot-leg left"></div>
+            <div class="robot-leg right"></div>
           </div>
-          <div class="robot-intro"><span class="eyebrow">YOUR AI COMPANION</span><h1>Hey there, <span id="robotNameTitle">I'm Chin Yantra!</span></h1><p id="robotGreeting">Your curious, kind, and eco-friendly learning buddy. What shall we discover today?</p></div>
-          <div class="robot-footer"><span><i class="mini-leaf">✦</i> Curious minds grow here</span><span class="robot-version">EDITION 01</span></div>
+          <div class="robot-shadow"></div>
         </div>
-        <div class="chat-panel panel">
-          <div class="chat-header"><div class="chat-heading"><div class="chat-avatar">✦</div><div><h2 id="chatSubjectTitle">Let's get curious</h2><p><span class="status-dot"></span><span id="chatStatus">Chin Yantra is ready</span></p></div></div><div class="chat-tools"><button class="icon-button" id="newChatBtn" title="Start a new conversation" aria-label="New conversation">＋</button><button class="icon-button" id="clearChatBtn" title="Clear conversation" aria-label="Clear conversation">⌫</button></div></div>
-          <div class="suggestions" id="suggestions" aria-label="Suggested questions"></div>
-          <div class="messages" id="messages" role="log" aria-live="polite" aria-relevant="additions text"><div class="empty-state" id="emptyState"><div class="empty-spark">✧</div><h3>Every great discovery starts with a question.</h3><p>Pick a suggestion above or ask Chin Yantra anything you're learning.</p></div></div>
-          <div class="chat-composer"><label class="sr-only" for="messageInput">Your message</label><textarea id="messageInput" rows="1" placeholder="Ask me anything…" maxlength="8000"></textarea><div class="composer-actions"><div class="composer-left"><button class="tool-button" id="micBtn" title="Speak your question"><span>🎙</span><span>Voice</span></button><button class="tool-button" id="cameraBtn" title="Ask about something you show the camera"><span>◎</span><span>Camera</span></button><button class="tool-button" id="quizBtn" title="Start a short quiz"><span>✳</span><span>Quiz me</span></button></div><button class="send-button" id="sendBtn"><span>Send</span><span>↗</span></button></div><div class="composer-hint"><span>Enter to send · Shift + Enter for a new line</span><span id="charCount">0 / 8000</span></div></div>
+        <div class="robot-status">
+          <span class="status-avatar">✦</span>
+          <div><strong id="robotStatus">Ready to learn!</strong><small id="robotSubStatus">Ask me anything.</small></div>
         </div>
-        <aside class="side-column"><div class="side-card panel"><div class="side-card-title"><span class="side-icon">✧</span><div><h3>Try a learning boost</h3><p>Make tricky things click.</p></div></div><button class="boost-action" id="simplerBtn"><span>☼</span><span><strong>Explain more simply</strong><small>Break it down into easy steps</small></span><span class="arrow">↗</span></button><button class="boost-action" id="exampleBtn"><span>◇</span><span><strong>Give me an example</strong><small>Connect ideas to real life</small></span><span class="arrow">↗</span></button><button class="boost-action" id="quizBoostBtn"><span>✳</span><span><strong>Quiz me</strong><small>Check what you've learned</small></span><span class="arrow">↗</span></button></div>
-          <div class="side-card monitor-card panel"><div class="monitor-top"><span class="monitor-symbol">◖</span><span class="teacher-chip" id="teacherModeChip">TEACHER TOOL</span></div><h3>Class Monitor</h3><p>Local sound-level monitoring to help teachers notice sustained classroom noise.</p><div class="monitor-status"><span class="status-dot muted-dot" id="monitorDot"></span><span id="monitorSummary">Teacher sign-in required</span></div><button class="button button-dark" id="classMonitorOpen">Open class monitor <span>↗</span></button><small class="privacy-note">Audio levels are analysed locally. No classroom audio is recorded or uploaded.</small></div>
-          <div class="side-card notes-card panel"><div class="side-card-title"><span class="side-icon">✎</span><div><h3>Lecture Notes</h3><p>Keep useful ideas in one place.</p></div></div><button class="button button-dark full-button" id="openNotesBtn" type="button">Open lecture notes ↗</button><small class="privacy-note">Notes are saved on this device only.</small></div>
-          <div class="tip-card"><span>✦</span><p><strong>Curiosity tip</strong><br>There's no such thing as a silly question. Asking why is how discovery begins.</p></div>
-        </aside>
+        <div class="quick-facts">
+          <div><strong>08</strong><small>SUBJECTS</small></div>
+          <div><strong>24/7</strong><small>LEARNING</small></div>
+          <div><strong>∞</strong><small>CURIOSITY</small></div>
+        </div>
+      </aside>
+
+      <section class="chat-panel">
+        <div class="chat-heading">
+          <div>
+            <span class="eyebrow">LEARNING SPACE</span>
+            <h1>What shall we <span>explore?</span></h1>
+            <p>Your curious mind is your greatest superpower.</p>
+          </div>
+          <button class="clear-button" id="clearChatBtn">↺ New chat</button>
+        </div>
+
+        <div class="subject-section">
+          <div class="section-label">CHOOSE YOUR SUBJECT</div>
+          <div class="subject-grid" id="subjectGrid">
+            <button class="subject-card active" data-subject="General"><span>✦</span>General</button>
+            <button class="subject-card" data-subject="Mathematics"><span>∑</span>Maths</button>
+            <button class="subject-card" data-subject="Physics"><span>⚛</span>Physics</button>
+            <button class="subject-card" data-subject="Chemistry"><span>⚗</span>Chemistry</button>
+            <button class="subject-card" data-subject="Biology"><span>⌘</span>Biology</button>
+            <button class="subject-card" data-subject="History"><span>⌛</span>History</button>
+            <button class="subject-card" data-subject="Geography"><span>🌍</span>Geography</button>
+            <button class="subject-card" data-subject="AI"><span>◈</span>AI</button>
+            <button class="subject-card" data-subject="Robotics"><span>🤖</span>Robotics</button>
+          </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages" aria-live="polite">
+          <div class="welcome-card" id="welcomeCard">
+            <div class="welcome-icon">🌱</div>
+            <h2>Namaste! I'm Chin Yantra.</h2>
+            <p>Your friendly AI learning companion. Pick a subject and ask me a question. Let's make learning fun!</p>
+            <div class="suggestion-list">
+              <button class="suggestion" data-question="Explain black holes in simple words.">What are black holes?</button>
+              <button class="suggestion" data-question="Explain photosynthesis with an easy example.">How does photosynthesis work?</button>
+              <button class="suggestion" data-question="Teach me a fascinating fact about artificial intelligence.">Tell me something about AI.</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="composer-wrap">
+          <div class="attachment-preview" id="attachmentPreview" hidden>
+            <img id="attachmentImage" alt="Attached question image">
+            <button id="removeAttachmentBtn" aria-label="Remove image">×</button>
+          </div>
+          <form id="chatForm" class="composer">
+            <button type="button" class="tool-btn" id="cameraBtn" title="Ask using camera">▣</button>
+            <textarea id="messageInput" rows="1" placeholder="Ask Chin Yantra anything..." aria-label="Your question"></textarea>
+            <button type="button" class="tool-btn" id="voiceBtn" title="Voice input">🎙</button>
+            <button type="submit" class="send-btn" id="sendBtn" aria-label="Send message">➤</button>
+          </form>
+          <div class="composer-footer">
+            <span id="composerHint">Enter to send · Shift + Enter for a new line</span>
+            <span>Powered by Gemini AI</span>
+          </div>
+        </div>
       </section>
-      <footer class="footer"><span>Made for curious minds at <strong>Chinmaya Vidyalaya</strong></span><span>Powered by curiosity <span class="footer-leaf">✦</span> Chin Yantra</span></footer>
     </main>
+
+    <footer class="app-footer">
+      <span>CHINMAYA AI <b>•</b> LEARN. EXPLORE. CREATE.</span>
+      <button id="notesOpenBtn">▤ Lecture Notes</button>
+    </footer>
   </div>
 
-  <div class="modal-backdrop key-backdrop hidden" id="apiKeyModal" role="dialog" aria-modal="true" aria-labelledby="apiKeyTitle"><div class="modal small-modal key-modal"><div class="modal-emblem">✦</div><span class="eyebrow">WELCOME TO CHINMAYA AI</span><h2 id="apiKeyTitle">Connect your learning companion</h2><p class="modal-subtitle">Enter your Gemini API key to begin chatting. The key stays in this browser tab's memory and is not saved to this device.</p><form id="apiKeyForm"><label for="apiKeyInput">Gemini API key</label><div class="password-wrap"><input id="apiKeyInput" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your Gemini API key" required><button type="button" id="toggleApiKey" aria-label="Show API key">Show</button></div><p class="form-error" id="apiKeyError" aria-live="polite"></p><button class="button button-primary full-button" type="submit">Start learning ↗</button></form><button class="text-button" id="useConfiguredKey" type="button">Use the key configured in config.js</button><p class="security-note">For a public website, a backend proxy is required to keep API keys secret. Do not publish a personal unrestricted key.</p></div></div>
+  <!-- Camera modal -->
+  <div class="modal-backdrop" id="cameraModal" hidden>
+    <section class="modal camera-modal" role="dialog" aria-modal="true" aria-labelledby="cameraTitle">
+      <button class="modal-close" data-close="cameraModal">×</button>
+      <span class="eyebrow">VISUAL LEARNING</span>
+      <h2 id="cameraTitle">Ask with a picture</h2>
+      <p>Show me a problem, diagram or object you'd like explained.</p>
+      <video id="cameraVideo" autoplay playsinline muted></video>
+      <canvas id="cameraCanvas" hidden></canvas>
+      <div class="modal-actions">
+        <button class="secondary-btn" id="cameraStartBtn">Start camera</button>
+        <button class="primary-btn" id="captureBtn" disabled>Capture image</button>
+        <label class="secondary-btn upload-label">Upload image<input type="file" id="imageUpload" accept="image/*" hidden></label>
+      </div>
+      <p class="small-note" id="cameraStatus">Camera access requires permission and a secure connection (HTTPS or localhost).</p>
+    </section>
+  </div>
 
-  <div class="modal-backdrop hidden" id="cameraModal" role="dialog" aria-modal="true" aria-labelledby="cameraTitle"><div class="modal camera-modal"><button class="modal-close" data-close="cameraModal" aria-label="Close camera">×</button><span class="eyebrow">LOOK, LEARN, DISCOVER</span><h2 id="cameraTitle">Show Chin Yantra something</h2><p class="modal-subtitle">Your camera starts only when you choose to activate it. A captured frame is sent to Gemini only when you analyse it.</p><div class="video-wrap"><video id="cameraVideo" autoplay muted playsinline></video><div class="video-placeholder" id="cameraPlaceholder"><span>◎</span><strong>Camera preview will appear here</strong><small>Allow camera access when your browser asks.</small></div></div><label for="cameraQuestion">What would you like to know?</label><textarea id="cameraQuestion" rows="2" maxlength="2000" placeholder="e.g. Explain this diagram or count the visible fingers…"></textarea><div class="modal-actions"><button class="button button-outline" id="startCameraBtn">Start camera</button><button class="button button-outline" id="stopCameraBtn" disabled>Stop camera</button><button class="button button-primary" id="analyseCameraBtn" disabled>Analyse frame ↗</button></div><p class="inline-status" id="cameraStatus" aria-live="polite">Camera is off.</p></div></div>
+  <!-- Notes modal -->
+  <div class="modal-backdrop" id="notesModal" hidden>
+    <section class="modal notes-modal" role="dialog" aria-modal="true" aria-labelledby="notesHeading">
+      <button class="modal-close" data-close="notesModal">×</button>
+      <span class="eyebrow">YOUR PERSONAL LIBRARY</span>
+      <h2 id="notesHeading">Lecture Notes</h2>
+      <p>Save useful explanations and build your own study library.</p>
+      <div class="notes-layout">
+        <aside class="saved-notes">
+          <div class="section-label">SAVED NOTES</div>
+          <div id="savedNotesList"></div>
+          <button class="secondary-btn full-btn" id="newNoteBtn">＋ New note</button>
+        </aside>
+        <div class="note-editor">
+          <input id="notesTitle" placeholder="Note title">
+          <select id="notesSubject">
+            <option>General</option><option>Mathematics</option><option>Physics</option>
+            <option>Chemistry</option><option>Biology</option><option>History</option>
+            <option>Geography</option><option>AI</option><option>Robotics</option>
+          </select>
+          <textarea id="notesContent" placeholder="Write your notes here..."></textarea>
+          <div class="modal-actions">
+            <button class="primary-btn" id="saveNotesBtn">Save note</button>
+            <button class="secondary-btn" id="addChatToNotesBtn">Add last answer</button>
+            <button class="secondary-btn" id="downloadNotesBtn">Export TXT</button>
+          </div>
+          <small id="notesStatus" aria-live="polite"></small>
+        </div>
+      </div>
+    </section>
+  </div>
 
-  <div class="modal-backdrop hidden" id="teacherModal" role="dialog" aria-modal="true" aria-labelledby="teacherTitle"><div class="modal small-modal"><button class="modal-close" data-close="teacherModal" aria-label="Close login">×</button><div class="modal-emblem">♧</div><span class="eyebrow">TEACHER SPACE</span><h2 id="teacherTitle">Welcome, teacher</h2><p class="modal-subtitle">Sign in to open the classroom sound-level monitor.</p><form id="teacherLoginForm"><label for="teacherPasswordInput">Demonstration password</label><div class="password-wrap"><input id="teacherPasswordInput" type="password" autocomplete="current-password" placeholder="Enter password" required><button type="button" id="showPasswordBtn" aria-label="Show password">Show</button></div><p class="form-error" id="loginError" aria-live="polite"></p><button class="button button-primary full-button" type="submit">Enter teacher space ↗</button></form><p class="security-note">Demo only: this browser-side password is not secure authentication and must not protect real accounts.</p></div></div>
+  <!-- Teacher portal -->
+  <div class="modal-backdrop" id="teacherModal" hidden>
+    <section class="modal teacher-modal" role="dialog" aria-modal="true" aria-labelledby="teacherHeading">
+      <button class="modal-close" data-close="teacherModal">×</button>
+      <span class="eyebrow">EDUCATOR ACCESS</span>
+      <h2 id="teacherHeading">Teacher Portal</h2>
+      <div id="teacherLogin">
+        <p>Enter the configured demo password to access classroom tools.</p>
+        <form id="teacherLoginForm">
+          <input id="teacherPasswordInput" type="password" placeholder="Teacher password" required>
+          <button class="primary-btn" type="submit">Sign in</button>
+          <small id="teacherLoginError" role="alert"></small>
+        </form>
+      </div>
+      <div id="teacherDashboard" hidden>
+        <div class="teacher-welcome"><span>✓</span><div><strong>Classroom tools</strong><small>Microphone noise monitor</small></div></div>
+        <div class="noise-card">
+          <div class="noise-top"><span>ROOM NOISE LEVEL</span><strong id="noiseValue">--</strong></div>
+          <div class="noise-meter"><div id="noiseBar"></div></div>
+          <div class="noise-labels"><span>Quiet</span><span>Moderate</span><span>Loud</span></div>
+          <p id="noiseStatus">Start monitoring to measure relative microphone activity.</p>
+          <div class="modal-actions">
+            <button class="primary-btn" id="startMonitorBtn">Start monitor</button>
+            <button class="secondary-btn" id="stopMonitorBtn" disabled>Stop</button>
+          </div>
+        </div>
+        <div class="alarm-banner" id="noiseAlert" hidden>⚠ Classroom noise is above the configured threshold.</div>
+        <button class="secondary-btn full-btn" id="teacherLogoutBtn">Log out</button>
+      </div>
+    </section>
+  </div>
 
-  <div class="modal-backdrop hidden" id="monitorModal" role="dialog" aria-modal="true" aria-labelledby="monitorTitle"><div class="modal monitor-modal"><button class="modal-close" data-close="monitorModal" aria-label="Close monitor">×</button><div class="monitor-modal-head"><div><span class="eyebrow">TEACHER TOOLS</span><h2 id="monitorTitle">Classroom sound monitor</h2><p class="modal-subtitle">Measures sound level locally; it does not identify clapping or record speech.</p></div><span class="teacher-chip">TEACHER MODE</span></div><div class="meter-card"><div class="meter-readout"><span id="dbValue">—</span><small>relative level</small></div><div class="meter-track"><div id="meterFill" class="meter-fill"></div></div><div class="meter-labels"><span>Quiet</span><span>Elevated</span><span>Loud</span></div><p id="monitorStateText" class="inline-status" aria-live="polite">Monitoring is off.</p></div><div class="settings-row"><label for="sensitivityRange">Noise sensitivity <strong id="sensitivityLabel">Medium</strong></label><input id="sensitivityRange" type="range" min="1" max="100" value="55"><small>Higher sensitivity alerts at lower sound levels.</small></div><div class="monitor-controls"><button class="button button-primary" id="startMonitorBtn">Start monitoring</button><button class="button button-outline" id="stopMonitorBtn" disabled>Stop monitoring</button><button class="button button-outline" id="muteAlarmBtn">Mute alarm</button></div><p class="privacy-note">Microphone access is requested only after you start monitoring. Sound samples stay in this browser and are not saved or uploaded.</p><button class="button button-dark full-button" id="teacherLogoutBtn">Log out of teacher mode</button></div></div>
-
-  <div class="alarm-overlay hidden" id="alarmOverlay" role="alertdialog" aria-live="assertive" aria-label="Classroom noise alert"><div class="alarm-card"><div class="alarm-pulse">!</div><span class="eyebrow">CLASSROOM REMINDER</span><h2>Let's bring the noise level down.</h2><p>A sustained high sound level was detected. Please settle and listen.</p><div class="alarm-countdown" id="alarmCountdown">Alert will clear shortly</div><div class="alarm-actions"><button class="button button-dark" id="dismissAlarmBtn">Dismiss alert</button><button class="button button-outline" id="alarmMuteQuickBtn">Mute alarm</button></div></div></div>
-  <div class="modal-backdrop hidden" id="notesModal" role="dialog" aria-modal="true" aria-labelledby="notesTitle"><div class="modal notes-modal"><button class="modal-close" data-close="notesModal" aria-label="Close lecture notes">×</button><span class="eyebrow">YOUR LEARNING NOTEBOOK</span><h2 id="notesTitle">Lecture Notes</h2><p class="modal-subtitle">Write, save and revisit key ideas. Notes stay in this browser on this device.</p><label for="notesHeading">Note title</label><input id="notesHeading" type="text" maxlength="100" placeholder="e.g. Photosynthesis — key points"><label for="notesSubject">Subject</label><select id="notesSubject"><option>Mathematics</option><option>Physics</option><option>Chemistry</option><option>Biology</option><option>History</option><option>Geography</option><option>Artificial Intelligence</option><option>Robotics</option><option>General</option></select><label for="notesContent">Your notes</label><textarea id="notesContent" rows="10" maxlength="20000" placeholder="Write your key points, definitions, examples and questions here…"></textarea><div class="notes-toolbar"><button class="button button-primary" id="saveNotesBtn" type="button">Save notes</button><button class="button button-outline" id="addChatToNotesBtn" type="button">Add latest chat</button><button class="button button-outline" id="downloadNotesBtn" type="button">Download .txt</button></div><p class="inline-status" id="notesStatus" aria-live="polite">No notes saved yet.</p><div class="saved-notes" id="savedNotesList" aria-label="Saved notes"></div></div></div>
-  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
-</body></html>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
