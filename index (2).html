@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#176b45"><meta name="description" content="Chinmaya AI — a friendly school learning companion">
+  <title>CHINMAYA AI · Chin Yantra</title><link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Chin Yantra">
+  <style>
+
+:root {
+  color-scheme: light;
+  --page: #eff6eb;
+  --surface: #ffffff;
+  --surface-2: #f5f8f0;
+  --surface-3: #e8f0e3;
+  --text: #203b2c;
+  --muted: #708074;
+  --line: #dce7d8;
+  --green: #34764b;
+  --green-dark: #235c39;
+  --green-light: #dceedd;
+  --orange: #ef9b45;
+  --orange-light: #fff0db;
+  --shadow: 0 16px 44px rgba(35, 72, 44, .09);
+  --radius: 22px;
+}
+
+* { box-sizing: border-box; }
+
+/* Keep dialogs and overlays closed until their JavaScript explicitly opens them. */
+.hidden { display: none !important; }
+
+[hidden] { display: none !important; }
+
+html { min-height: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse at 8% 10%, rgba(189, 220, 170, .28), transparent 35%),
+    radial-gradient(ellipse at 95% 90%, rgba(255, 202, 139, .18), transparent 32%),
+    var(--page);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  transition: background .3s ease, color .3s ease;
+}
+
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .48; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 3px solid rgba(239, 155, 69, .65);
+  outline-offset: 3px;
+}
+
+.app-shell { max-width: 1680px; min-height: 100vh; margin: 0 auto; padding: 0 28px; }
+
+.topbar {
+  min-height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+.brand-mark {
+  display: grid; place-items: center; width: 45px; height: 45px;
+  border-radius: 16px; background: var(--green); color: #fff; font-size: 25px;
+  box-shadow: 0 7px 16px rgba(52, 118, 75, .22);
+}
+.brand strong { display: block; letter-spacing: .08em; font-size: 14px; }
+.brand small { display: block; color: var(--muted); margin-top: 4px; font-size: 11px; }
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+.connection-status, .live-pill, .robot-status {
+  display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px;
+}
+.status-dot, .live-pill > span {
+  width: 8px; height: 8px; border-radius: 50%; background: #65a66d; display: inline-block;
+  box-shadow: 0 0 0 4px rgba(101, 166, 109, .12);
+}
+.icon-button, .subtle-button, .secondary-button, .round-tool {
+  border: 1px solid var(--line); color: var(--text); background: var(--surface);
+  border-radius: 12px; transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.icon-button { min-height: 40px; padding: 9px 12px; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; }
+.icon-button:hover, .subtle-button:hover, .secondary-button:hover, .round-tool:hover { transform: translateY(-1px); border-color: var(--green); }
+.theme-toggle { color: var(--green); }
+
+.workspace {
+  display: grid; grid-template-columns: minmax(290px, 365px) minmax(0, 1fr);
+  gap: 24px; padding: 24px 0; align-items: stretch;
+}
+.companion-panel, .chat-panel {
+  min-width: 0; background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.companion-panel {
+  padding: 22px; display: flex; flex-direction: column; position: relative; overflow: hidden;
+  background: linear-gradient(165deg, var(--surface) 35%, var(--surface-2));
+}
+.companion-heading, .section-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.eyebrow { color: var(--green); font-size: 10px; font-weight: 800; letter-spacing: .15em; }
+.live-pill { background: var(--surface-2); padding: 7px 10px; border-radius: 99px; font-size: 10px; }
+.live-pill > span { width: 6px; height: 6px; }
+
+.robot-stage {
+  min-height: 310px; display: grid; place-items: center; position: relative;
+  isolation: isolate; margin: 10px -10px 0;
+  background: radial-gradient(ellipse, rgba(189, 220, 170, .3), transparent 68%);
+}
+.orbit { position: absolute; border: 1px solid rgba(80, 137, 91, .18); border-radius: 50%; z-index: -1; }
+.orbit-one { width: 260px; height: 260px; }
+.orbit-two { width: 215px; height: 215px; border-style: dashed; animation: orbit-spin 42s linear infinite; }
+.float-leaf { position: absolute; color: var(--orange); animation: float-gentle 4s ease-in-out infinite; }
+.leaf-one { top: 52px; left: 17%; font-size: 24px; }
+.leaf-two { right: 15%; top: 93px; color: var(--green); font-size: 24px; animation-delay: -1.4s; }
+.leaf-three { right: 20%; bottom: 46px; font-size: 20px; animation-delay: -2.3s; }
+
+.robot { width: 186px; height: 258px; position: relative; transform-origin: 50% 85%; animation: robot-breathe 4s ease-in-out infinite; }
+.robot-head {
+  position: absolute; z-index: 3; left: 16px; top: 37px; width: 154px; height: 133px;
+  border: 3px solid #b7c9b2; border-radius: 48px 48px 42px 42px;
+  background: linear-gradient(145deg, #ffffff, #e1eddb 72%);
+  box-shadow: inset -8px -9px 16px rgba(71, 121, 73, .12), 0 14px 23px rgba(44, 91, 53, .12);
+}
+.robot-antenna { position: absolute; z-index: 1; top: 11px; left: 86px; width: 14px; height: 33px; border-radius: 10px; background: #9ebd9a; }
+.robot-antenna span {
+  position: absolute; top: -10px; left: -4px; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--orange); border: 4px solid #fff0db; box-shadow: 0 0 18px rgba(239, 155, 69, .5);
+  animation: antenna-glow 2.5s ease-in-out infinite;
+}
+.robot-ear { position: absolute; top: 87px; width: 22px; height: 43px; border: 3px solid #a5c39f; background: #d8e8d1; border-radius: 10px; z-index: 2; }
+.ear-left { left: 3px; } .ear-right { right: 3px; }
+.robot-forehead { height: 31px; display: grid; place-items: center; }
+.forehead-symbol { color: #d88b35; font-size: 17px; }
+.robot-face {
+  position: relative; margin: 0 12px; height: 78px; border-radius: 27px;
+  background: linear-gradient(145deg, #244a39, #173629);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, .23);
+  display: flex; justify-content: center; align-items: center; gap: 25px;
+}
+.eye { position: relative; width: 20px; height: 25px; background: #a8f1c0; border-radius: 50%; box-shadow: 0 0 13px rgba(129, 247, 163, .55); overflow: hidden; transition: height .12s ease; }
+.eye span { position: absolute; width: 6px; height: 8px; left: 7px; top: 5px; border-radius: 50%; background: #fff; }
+.cheek { position: absolute; top: 49px; width: 15px; height: 5px; border-radius: 50%; background: rgba(240, 150, 110, .58); }
+.cheek-left { left: 8px; } .cheek-right { right: 8px; }
+.robot-mouth { position: absolute; left: 50%; bottom: 9px; transform: translateX(-50%); width: 21px; height: 7px; border-bottom: 3px solid #f6c89c; border-radius: 0 0 20px 20px; transition: all .2s ease; }
+.robot-chin { height: 13px; margin: 0 47px; border-radius: 0 0 12px 12px; background: #b5d0ad; }
+.face-shine { position: absolute; top: 5px; left: 8px; width: 26px; height: 3px; border-radius: 5px; background: rgba(255,255,255,.2); }
+.robot-neck { position: absolute; left: 76px; top: 164px; height: 20px; width: 34px; background: #a6c79e; border-radius: 0 0 9px 9px; }
+.robot-body {
+  position: absolute; top: 178px; left: 37px; width: 112px; height: 74px; border-radius: 32px 32px 24px 24px;
+  border: 3px solid #b7c9b2; background: linear-gradient(145deg, #fff, #dcebd5);
+  box-shadow: 0 12px 20px rgba(44, 91, 53, .11); display: flex; align-items: center; flex-direction: column;
+}
+.body-symbol { margin-top: 8px; color: var(--green); font-size: 24px; line-height: 26px; }
+.body-light { width: 20px; height: 5px; border-radius: 5px; background: var(--orange); margin-top: 2px; }
+.body-panel { width: 38px; height: 3px; background: #b2cbaa; border-radius: 4px; margin-top: 6px; }
+.robot-arm { position: absolute; top: 188px; width: 21px; height: 49px; border: 3px solid #b7c9b2; background: #e1eddb; border-radius: 12px; transform-origin: top center; }
+.arm-left { left: 20px; transform: rotate(12deg); }
+.arm-right { right: 20px; transform: rotate(-12deg); }
+.robot-shadow { position: absolute; bottom: -7px; left: 30px; width: 126px; height: 16px; background: rgba(51, 89, 52, .12); filter: blur(7px); border-radius: 50%; }
+
+.robot.blink .eye { height: 3px; margin-top: 11px; border-radius: 50%; }
+.robot.yawning .robot-mouth { width: 17px; height: 20px; bottom: 4px; border: 2px solid #f6c89c; border-radius: 50%; background: #c87564; }
+.robot.talking .robot-mouth { height: 12px; width: 23px; border: 2px solid #f6c89c; background: #c87564; }
+.robot.thinking { animation: robot-think 1.2s ease-in-out infinite; }
+.robot.happy .robot-mouth { width: 28px; height: 12px; border-bottom-width: 4px; }
+.robot.alert .robot-antenna span { background: #f04f4f; }
+.companion-info { text-align: center; }
+.robot-status { font-size: 11px; }
+.companion-info h1 { margin: 9px 0 6px; font-size: 25px; letter-spacing: -.04em; }
+.companion-info p { max-width: 255px; margin: 0 auto; color: var(--muted); line-height: 1.6; font-size: 13px; }
+
+.companion-tools { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 23px; }
+.tool-button {
+  display: flex; gap: 12px; align-items: center; padding: 11px 12px; text-align: left;
+  border: 1px solid var(--line); background: var(--surface); border-radius: 14px; color: var(--text);
+  transition: background .2s ease, transform .2s ease;
+}
+.tool-button:hover { background: var(--surface-2); transform: translateX(2px); }
+.tool-icon { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: 12px; color: var(--green); background: var(--green-light); font-size: 17px; }
+.tool-button strong, .tool-button small { display: block; }
+.tool-button strong { font-size: 12px; }
+.tool-button small { color: var(--muted); font-size: 10px; margin-top: 3px; }
+.nature-note { display: flex; gap: 10px; align-items: flex-start; margin-top: 18px; padding: 13px; border-radius: 14px; background: var(--orange-light); color: #7d5b32; }
+.nature-note > span { font-size: 18px; }
+.nature-note p { margin: 0; font-size: 11px; line-height: 1.55; }
+.teacher-entry { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; padding-top: 19px; font-size: 10px; color: var(--muted); }
+.teacher-entry button, .logout-button { border: 0; background: transparent; color: var(--green); font-size: 11px; font-weight: 700; padding: 7px; }
+
+.chat-panel { display: flex; flex-direction: column; padding: 26px; min-height: 720px; }
+.chat-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.chat-header h2 { font-size: clamp(22px, 2.3vw, 30px); letter-spacing: -.045em; margin: 7px 0 5px; }
+.chat-header p { color: var(--muted); margin: 0; font-size: 12px; line-height: 1.6; }
+.subtle-button { padding: 10px 13px; white-space: nowrap; font-size: 11px; }
+
+.subject-section { margin-top: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+.section-heading h3 { margin: 0; font-size: 12px; }
+.section-heading > span { color: var(--muted); font-size: 10px; }
+.subject-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.subject-button {
+  display: flex; align-items: center; gap: 8px; min-width: 0; padding: 10px 8px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2);
+  color: var(--text); font-size: 10px; font-weight: 650; text-align: left;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.subject-button:hover { transform: translateY(-2px); }
+.subject-button.selected { border-color: var(--subject-colour); box-shadow: 0 0 0 2px color-mix(in srgb, var(--subject-colour) 18%, transparent); background: var(--subject-bg); }
+.subject-icon { display: grid; place-items: center; flex-shrink: 0; width: 27px; height: 27px; border-radius: 9px; background: var(--subject-bg); color: var(--subject-colour); font-size: 14px; }
+.subject-button span:last-child { overflow-wrap: anywhere; }
+
+.chat-messages { display: flex; flex-direction: column; gap: 20px; padding: 22px 3px 14px; flex: 1; }
+.message { display: flex; align-items: flex-start; gap: 10px; max-width: 100%; animation: message-in .3s ease both; }
+.message.user-message { justify-content: flex-end; }
+.message-avatar { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; border-radius: 12px; background: var(--green-light); color: var(--green); font-size: 17px; }
+.user-message .message-avatar { display: none; }
+.message-content { max-width: min(88%, 730px); min-width: 0; }
+.user-message .message-content { display: flex; flex-direction: column; align-items: flex-end; }
+.message-meta { color: var(--muted); font-size: 10px; margin: 0 0 7px 3px; }
+.message-meta span { opacity: .75; }
+.message-bubble { padding: 13px 15px; border-radius: 5px 17px 17px 17px; background: var(--surface-2); border: 1px solid var(--line); font-size: 12px; line-height: 1.8; overflow-wrap: anywhere; }
+.message-bubble p { margin: 0 0 9px; white-space: pre-wrap; }
+.message-bubble p:last-child { margin-bottom: 0; }
+.message-bubble ul, .message-bubble ol { padding-left: 20px; }
+.user-message .message-bubble { border: 0; background: var(--green); color: #fff; border-radius: 17px 5px 17px 17px; }
+.message-actions { display: flex; gap: 7px; margin: 7px 0 0 3px; }
+.message-actions button { border: 0; padding: 4px 7px; background: transparent; color: var(--green); font-size: 10px; }
+.user-message .message-meta { text-align: right; margin-right: 3px; }
+.typing-bubble { display: flex; gap: 5px; align-items: center; min-height: 40px; }
+.thinking-dots { display: inline-flex; align-items: center; gap: 4px; }
+.thinking-dots i { display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: dot-bounce .8s infinite alternate; }
+.thinking-dots i:nth-child(2) { animation-delay: .18s; }
+.thinking-dots i:nth-child(3) { animation-delay: .36s; }
+.thinking-bar { color: var(--muted); font-size: 11px; display: flex; align-items: center; gap: 9px; padding: 8px 0; }
+.quick-prompts { display: flex; flex-wrap: wrap; gap: 7px; margin: 5px 0 14px; }
+.quick-prompt { border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 99px; padding: 8px 11px; font-size: 10px; transition: .18s ease; }
+.quick-prompt:hover { border-color: var(--orange); color: var(--text); background: var(--orange-light); }
+
+.composer { border: 1px solid var(--line); border-radius: 18px; background: var(--surface); padding: 12px; box-shadow: 0 5px 18px rgba(35, 72, 44, .04); }
+.composer textarea { width: 100%; min-height: 35px; max-height: 140px; resize: vertical; border: 0; outline: 0; color: var(--text); background: transparent; padding: 5px 4px 10px; font-size: 13px; line-height: 1.5; }
+.composer textarea::placeholder { color: var(--muted); opacity: .8; }
+.composer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.composer-tools { display: flex; align-items: center; gap: 6px; }
+.round-tool { width: 34px; height: 34px; font-size: 14px; display: grid; place-items: center; }
+.mic-button.listening { color: #fff; background: #d84848; border-color: #d84848; animation: mic-pulse 1s infinite; }
+.voice-state { font-size: 10px; color: var(--muted); margin-left: 4px; }
+.send-button, .primary-button {
+  border: 0; background: var(--green); color: #fff; border-radius: 12px;
+  padding: 11px 16px; font-size: 11px; font-weight: 750; display: inline-flex; align-items: center; gap: 14px;
+  transition: transform .18s ease, background .18s ease;
+}
+.send-button:hover, .primary-button:hover { background: var(--green-dark); transform: translateY(-1px); }
+.send-button:disabled { opacity: .55; }
+.privacy-note { text-align: center; color: var(--muted); font-size: 9px; line-height: 1.5; margin: 12px 0 0; }
+.app-footer { display: flex; justify-content: space-between; gap: 15px; padding: 8px 0 20px; color: var(--muted); font-size: 10px; }
+.app-footer span:first-child { font-weight: 800; letter-spacing: .1em; color: var(--green); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+/* Modals */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center;
+  padding: 18px; background: rgba(15, 31, 21, .53); backdrop-filter: blur(8px);
+  animation: fade-in .18s ease both;
+}
+.modal {
+  width: min(100%, 560px); max-height: min(90vh, 900px); overflow-y: auto;
+  background: var(--surface); color: var(--text); border: 1px solid var(--line);
+  border-radius: 22px; padding: 23px; box-shadow: 0 25px 80px rgba(0, 0, 0, .2);
+  animation: modal-in .24s ease both;
+}
+.settings-modal { width: min(100%, 610px); }
+.monitor-modal { width: min(100%, 650px); }
+.modal-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 17px; }
+.modal-header h2 { font-size: 24px; letter-spacing: -.04em; margin: 5px 0 0; }
+.modal-close { border: 0; border-radius: 10px; background: var(--surface-2); color: var(--text); width: 36px; height: 36px; font-size: 25px; line-height: 1; }
+.modal-description { color: var(--muted); font-size: 12px; line-height: 1.7; }
+.settings-content { display: grid; gap: 21px; }
+.settings-group { display: grid; gap: 12px; }
+.settings-group h3, .monitor-camera-section h3 { margin: 0; font-size: 13px; }
+.setting-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.setting-row strong, .setting-row small { display: block; }
+.setting-row strong { font-size: 12px; }
+.setting-row small { color: var(--muted); font-size: 10px; line-height: 1.5; margin-top: 4px; }
+.switch-button { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); border-radius: 99px; padding: 5px 9px 5px 5px; font-size: 10px; }
+.switch-button > span { width: 22px; height: 22px; border-radius: 50%; background: #aab8aa; transition: .2s; }
+.switch-button.active > span { background: var(--green); box-shadow: inset 0 0 0 5px var(--green); border: 5px solid #c6e5c8; }
+.field-label { display: block; color: var(--muted); font-size: 11px; margin: 5px 0 -5px; }
+.settings-input { width: 100%; min-height: 42px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); border-radius: 11px; padding: 10px 12px; font-size: 12px; }
+textarea.settings-input { resize: vertical; }
+.range-row { display: grid; gap: 8px; }
+.range-row label, .threshold-row label { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; }
+.range-row label span, .threshold-row strong { color: var(--green); }
+input[type="range"] { width: 100%; accent-color: var(--green); }
+.settings-footnote { color: var(--muted); font-size: 10px; line-height: 1.7; margin: 7px 0 0; }
+.primary-button { justify-content: center; min-height: 42px; }
+.secondary-button { min-height: 38px; padding: 9px 12px; font-size: 11px; }
+.modal-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 13px 0; }
+.camera-preview, .monitor-camera-preview { display: grid; place-items: center; overflow: hidden; border-radius: 15px; background: #172a20; min-height: 210px; }
+.camera-preview video { display: block; width: 100%; max-height: 340px; object-fit: contain; }
+.camera-placeholder { min-height: 200px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; color: #c4d9c7; text-align: center; padding: 20px; }
+.camera-placeholder span { font-size: 34px; }
+.camera-placeholder p { margin: 0; font-size: 11px; }
+.captured-image { display: block; max-height: 230px; max-width: 100%; margin: 12px auto; border-radius: 12px; }
+.question-input { margin: 12px 0; }
+.status-message { color: var(--muted); font-size: 10px; line-height: 1.5; }
+.password-row { display: flex; gap: 8px; }
+.password-row .settings-input { flex: 1; min-width: 0; }
+.error-message { color: #d64545; font-size: 11px; min-height: 16px; }
+.monitor-status { display: flex; align-items: center; gap: 9px; padding: 12px; border-radius: 12px; background: var(--surface-2); font-size: 12px; }
+.monitor-status.running .status-dot { background: #4db76c; box-shadow: 0 0 0 5px rgba(77,183,108,.16); }
+.noise-reading { margin: 18px 0; padding: 19px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-2); }
+.noise-number { display: flex; align-items: baseline; gap: 10px; margin: 7px 0 13px; }
+.noise-number strong { font-size: 42px; letter-spacing: -.06em; }
+.noise-number span { color: var(--muted); font-size: 11px; }
+.sound-meter { height: 13px; overflow: hidden; border-radius: 99px; background: var(--surface-3); }
+.sound-meter > div { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #4c9e64, #f3b54f, #e44e4e); transition: width .1s linear; }
+.meter-scale { display: flex; justify-content: space-between; gap: 5px; color: var(--muted); font-size: 9px; margin-top: 7px; }
+.threshold-row { display: grid; gap: 8px; }
+.notice-card { padding: 15px; border-radius: 12px; background: var(--orange-light); color: #78522c; font-size: 12px; }
+.monitor-camera-section { margin-top: 24px; border-top: 1px solid var(--line); padding-top: 20px; }
+.monitor-camera-preview { min-height: 155px; }
+.monitor-camera-preview video { display: block; width: 100%; max-height: 270px; object-fit: contain; }
+.logout-button { margin-top: 16px; color: #c44d4d; }
+
+/* Full-screen alarm */
+.alarm-overlay {
+  position: fixed; z-index: 3000; inset: 0; display: grid; place-items: center; overflow-y: auto;
+  padding: 22px; color: white; background: #a91020;
+  animation: alarm-flash .85s infinite alternate;
+}
+.alarm-card { width: min(100%, 600px); text-align: center; padding: 25px; border: 1px solid rgba(255,255,255,.4); border-radius: 25px; background: rgba(64, 0, 7, .22); box-shadow: 0 20px 90px rgba(0,0,0,.18); }
+.alarm-symbol { width: 74px; height: 74px; display: grid; place-items: center; border: 4px solid #fff; border-radius: 50%; margin: 0 auto 16px; font-size: 49px; font-weight: 900; animation: alarm-symbol-pulse .6s infinite alternate; }
+.alarm-kicker { font-size: 11px; letter-spacing: .22em; font-weight: 900; }
+.alarm-card h2 { margin: 11px 0; font-size: clamp(26px, 5vw, 44px); letter-spacing: -.04em; }
+.alarm-card p { font-size: 13px; line-height: 1.7; }
+.alarm-level { display: flex; justify-content: center; align-items: baseline; gap: 11px; margin: 20px 0; }
+.alarm-level strong { font-size: 48px; }
+.alarm-level span, .alarm-card small { font-size: 11px; opacity: .86; }
+.alarm-voice-note { padding: 13px; border-radius: 12px; background: rgba(0,0,0,.16); }
+.alarm-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 9px; margin: 20px 0; }
+.alarm-actions button { border: 1px solid rgba(255,255,255,.8); border-radius: 11px; padding: 12px 15px; background: white; color: #9c1120; font-weight: 800; font-size: 11px; }
+.alarm-actions button:last-child { color: white; background: transparent; }
+.toast { position: fixed; bottom: 22px; left: 50%; z-index: 4000; transform: translate(-50%, 20px); max-width: min(90vw, 500px); background: #203b2c; color: white; padding: 12px 16px; border-radius: 12px; font-size: 12px; opacity: 0; pointer-events: none; transition: .2s ease; box-shadow: var(--shadow); }
+.toast.visible { opacity: 1; transform: translate(-50%, 0); }
+
+/* Dark theme */
+body.dark {
+  color-scheme: dark;
+  --page: #101a15;
+  --surface: #19271f;
+  --surface-2: #203128;
+  --surface-3: #2a3c30;
+  --text: #e6f0e5;
+  --muted: #a4b5a5;
+  --line: #304437;
+  --green: #82c795;
+  --green-dark: #5ca978;
+  --green-light: #2d4935;
+  --orange-light: #4b3925;
+  --shadow: 0 16px 44px rgba(0, 0, 0, .18);
+  background:
+    radial-gradient(ellipse at 8% 10%, rgba(52, 118, 75, .17), transparent 35%),
+    radial-gradient(ellipse at 95% 90%, rgba(239, 155, 69, .08), transparent 32%),
+    var(--page);
+}
+body.dark .robot-head { background: linear-gradient(145deg, #e5f0df, #b7cfb0); }
+body.dark .robot-face { background: linear-gradient(145deg, #142d21, #0e2017); }
+body.dark .robot-body { background: linear-gradient(145deg, #dcebd5, #a9c99e); }
+body.dark .robot-ear, body.dark .robot-neck, body.dark .robot-arm { background: #b7d1ad; }
+body.dark .nature-note { color: #f2c995; }
+body.dark .message-bubble { background: var(--surface-2); }
+body.dark .user-message .message-bubble { background: #397b50; color: #fff; }
+body.dark .switch-button.active > span { background: #82c795; border-color: #2d4935; }
+body.dark .theme-toggle { color: #f5c37f; }
+body.dark .subject-button.selected { background: var(--subject-bg); }
+
+/* Animations */
+@keyframes robot-breathe { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-4px) rotate(.6deg); } }
+@keyframes orbit-spin { to { transform: rotate(360deg); } }
+@keyframes float-gentle { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-10px) rotate(8deg); } }
+@keyframes antenna-glow { 0%,100% { box-shadow: 0 0 10px rgba(239,155,69,.35); } 50% { box-shadow: 0 0 21px rgba(239,155,69,.7); } }
+@keyframes robot-think { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-2deg) translateY(-2px); } }
+@keyframes dot-bounce { to { transform: translateY(-4px); opacity: .45; } }
+@keyframes message-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes mic-pulse { 50% { box-shadow: 0 0 0 6px rgba(216,72,72,.18); } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modal-in { from { opacity: 0; transform: translateY(9px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes alarm-flash { from { background-color: #8f0c19; } to { background-color: #df1e31; } }
+@keyframes alarm-symbol-pulse { to { transform: scale(1.08); box-shadow: 0 0 25px rgba(255,255,255,.2); } }
+
+body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after {
+  animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important; transition-duration: .01ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:not(.allow-motion) *, body:not(.allow-motion) *::before, body:not(.allow-motion) *::after {
+    animation-duration: .01ms; animation-iteration-count: 1; scroll-behavior: auto;
+  }
+}
+
+@media (min-width: 1250px) {
+  .workspace { grid-template-columns: minmax(310px, 365px) minmax(0, 1fr); }
+  .companion-tools { grid-template-columns: 1fr; }
+}
+@media (max-width: 1050px) {
+  .app-shell { padding: 0 16px; }
+  .workspace { grid-template-columns: minmax(250px, 300px) minmax(0, 1fr); gap: 14px; }
+  .companion-panel { padding: 16px; }
+  .chat-panel { padding: 20px; }
+  .robot-stage { min-height: 275px; }
+  .subject-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .app-shell { padding: 0 10px; }
+  .topbar { min-height: 72px; }
+  .brand-mark { width: 38px; height: 38px; border-radius: 13px; }
+  .brand strong { font-size: 12px; }
+  .brand small { font-size: 10px; }
+  .topbar-actions { gap: 6px; }
+  .connection-status { display: none; }
+  .icon-button { padding: 8px 9px; }
+  .desktop-label, #themeLabel { display: none; }
+  .workspace { grid-template-columns: minmax(0, 1fr); padding-top: 12px; }
+  .companion-panel { padding: 14px 16px; }
+  .robot-stage { min-height: 235px; margin-top: 0; }
+  .orbit-one { width: 220px; height: 220px; }
+  .orbit-two { width: 185px; height: 185px; }
+  .robot { transform: scale(.84); margin: -12px 0; }
+  .companion-info h1 { font-size: 22px; }
+  .companion-tools { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 15px; }
+  .tool-button { flex-direction: column; text-align: center; gap: 6px; padding: 9px 5px; }
+  .tool-button small { display: none; }
+  .tool-icon { width: 31px; height: 31px; }
+  .nature-note { margin-top: 12px; }
+  .teacher-entry { padding-top: 10px; }
+  .chat-panel { min-height: 640px; padding: 16px 12px; }
+  .chat-header h2 { font-size: 23px; }
+  .chat-header p { max-width: 300px; }
+  .subtle-button { padding: 8px; font-size: 10px; }
+  .subject-section { margin-top: 18px; }
+  .subject-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .message-content { max-width: 92%; }
+  .message-bubble { font-size: 12px; }
+  .app-footer { font-size: 9px; }
+  .app-footer span:last-child { text-align: right; }
+}
+@media (max-width: 390px) {
+  .chat-header { flex-direction: column; }
+  .subject-button { font-size: 9px; }
+  .voice-state { display: none; }
+  .composer-tools { gap: 4px; }
+  .send-button { padding: 10px; }
+  .modal { padding: 17px; }
+  .alarm-card { padding: 17px; }
+}
+
+  .brand-mark img{display:block;width:42px;height:42px;object-fit:contain}
+  
+.capability-notice{margin:8px 2px 0;padding:9px 11px;border:1px solid #e9c98e;border-radius:11px;background:#fff8e9;color:#76511f;font-size:11px;line-height:1.5}
+.study-export-copy{color:var(--muted);font-size:12px;line-height:1.6;margin:8px 0 14px}
+
+</style>
+  <script>
+/* CHINMAYA AI / CHIN YANTRA — central configuration.
+   Edit values here, save, and refresh. Browser-side API keys are visible to visitors.
+*/
+window.APP_CONFIG = {
+  appName: "CHINMAYA AI",
+  robotName: "Chin Yantra",
+  apiKey: "PASTE YOUR API KEY HERE",
+  // Verified in Google's official Gemini API docs at project creation time: Gemini 3.5 Flash-Lite.
+  // Model availability can change; use an identifier enabled for your API key.
+  model: "gemini-2.5-flash",
+  apiBaseUrl: "https://generativelanguage.googleapis.com/v1beta/models/",
+  language: "en-IN",
+  greeting: "Your curious, kind, and eco-friendly learning buddy. What shall we discover today?",
+  defaultSubject: "Mathematics",
+  defaultExpression: "idle",
+  reducedMotion: false,
+  theme: {
+    primary: "#176b45",
+    primaryDark: "#104b34",
+    secondary: "#f28a27",
+    background: "#f6f5ed",
+    accent: "#b8d96a",
+    cream: "#fff9e9",
+    text: "#183d2d"
+  },
+  voice: {
+    enabled: true,
+    voiceName: "",
+    language: "en-IN",
+    rate: 1.0,
+    pitch: 1.08,
+    volume: 0.9,
+    speakByDefault: false,
+    showSpeakButton: true,
+    allowSpeechRecognition: true
+  },
+  teacherPassword: "1234", // DEMONSTRATION ONLY; never use as real authentication.
+  monitor: {
+    noiseSensitivity: 55,       // 1–100; higher values trigger at lower sound levels.
+    soundLevelThreshold: 0.085, // RMS amplitude, 0–1; tune for the device/room.
+    triggerDurationMs: 1800,    // sound must stay over threshold for this long
+    repeatCount: 3,             // sustained loud frames required within the active window
+    alertDurationMs: 5000,
+    alarmCooldownMs: 12000,
+    defaultAlarmEnabled: true,
+    allowTeacherMute: true,
+    sampleIntervalMs: 100
+  },
+  interface: {
+    maxHistoryMessages: 24,
+    maxOutputTokens: 1200,
+    cameraMaxWidth: 960,
+    cameraJpegQuality: 0.82,
+    toastDurationMs: 3200
+  },
+  subjects: [
+    { name: "Mathematics", icon: "∑", description: "Make numbers make sense", instruction: "Teach mathematics step by step. Show working for calculations, define symbols, check the result, and use an everyday analogy when useful. Never skip essential reasoning.", questions: ["Explain fractions with a pizza example", "Help me solve a linear equation", "What is the difference between area and perimeter?"] },
+    { name: "Physics", icon: "◉", description: "Discover how the world works", instruction: "Teach physics with scientifically accurate principles, units, equations, and real-world examples. Explain what each variable means and distinguish simplified models from reality.", questions: ["Why does a rainbow form?", "Explain Newton's laws simply", "What is the difference between mass and weight?"] },
+    { name: "Chemistry", icon: "⚗", description: "Explore matter and reactions", instruction: "Teach chemistry safely and accurately. Explain particles, elements, compounds, reactions, and equations at school level. Do not recommend dangerous experiments or mixing unknown chemicals.", questions: ["What is an atom made of?", "How are acids different from bases?", "Explain chemical reactions with examples"] },
+    { name: "Biology", icon: "❧", description: "Understand living things", instruction: "Teach biology using clear explanations of living systems, evidence-based facts, and relatable examples. Explain scientific terms in plain language and avoid overstating uncertain claims.", questions: ["How do plants make their food?", "What do mitochondria do?", "How does the human heart work?"] },
+    { name: "History", icon: "⌛", description: "Travel through time", instruction: "Teach history with chronology, context, causes, consequences, and multiple perspectives where relevant. Separate established evidence from interpretation and do not invent dates or quotations.", questions: ["Why are historical sources important?", "What caused the French Revolution?", "How do historians study ancient civilisations?"] },
+    { name: "Geography", icon: "◎", description: "Explore our changing planet", instruction: "Teach geography with clear spatial reasoning, map concepts, physical and human geography, and examples. Be careful with current facts and distinguish weather from climate.", questions: ["Why do monsoons happen?", "How are latitude and longitude used?", "What causes earthquakes?"] },
+    { name: "Artificial Intelligence", icon: "✧", description: "Learn how smart systems work", instruction: "Explain AI and machine learning accessibly, including benefits, limitations, bias, privacy, and responsible use. Do not claim AI is conscious or always correct.", questions: ["How does a chatbot generate answers?", "What is machine learning?", "Can AI make mistakes or show bias?"] },
+    { name: "Robotics", icon: "⚙", description: "Imagine, design, build", instruction: "Teach robotics through sensors, actuators, controllers, programming, and safe engineering principles. Use beginner-friendly examples and remind students to get adult supervision for tools, electricity, or moving machinery.", questions: ["How does a robot use sensors?", "What is the job of a microcontroller?", "How can I plan a simple school robot?"] }
+  ]
+};
+
+  </script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="CHINMAYA AI home"><span class="brand-mark" aria-hidden="true"><img src="logo.svg" alt="" width="42" height="42"></span><span><strong>CHINMAYA <b>AI</b></strong><small>LEARN · EXPLORE · CREATE</small></span></a>
+      <div class="header-status"><span class="status-dot"></span><span id="headerStatus">Ready to learn</span></div>
+      <div class="header-actions"><button class="icon-button" id="voiceToggle" title="Toggle voice output" aria-label="Toggle voice output">🔊</button><button class="button button-outline" id="teacherLoginOpen">♧ Teacher login</button></div>
+    </header>
+
+    <main>
+      <section class="hero-grid">
+        <div class="robot-card panel">
+          <div class="robot-orbit orbit-one"></div><div class="robot-orbit orbit-two"></div>
+          <div class="robot-badge"><span class="status-dot"></span><span id="robotStatus">Your learning buddy</span></div>
+          <div class="robot-stage" id="robotStage" data-expression="idle" aria-label="Animated robot Chin Yantra">
+            <div class="robot-shadow"></div>
+            <div class="robot-antenna"><span></span></div>
+            <div class="robot-head">
+              <div class="ear ear-left"><i></i></div><div class="ear ear-right"><i></i></div>
+              <div class="head-panel"><span class="head-screw screw-left"></span><span class="head-screw screw-right"></span></div>
+              <div class="brow brow-left"></div><div class="brow brow-right"></div>
+              <div class="eye eye-left"><span class="pupil"></span><i class="eye-shine"></i></div><div class="eye eye-right"><span class="pupil"></span><i class="eye-shine"></i></div>
+              <div class="nose"></div><div class="cheek cheek-left"></div><div class="cheek cheek-right"></div><div class="mouth"><span></span></div>
+              <div class="leaf-emblem"><svg viewBox="0 0 32 32"><path d="M26 5C12 5 5 11 6 20c1 5 6 7 10 4 7-4 8-12 10-19Z" fill="currentColor"/><path d="M7 27C12 19 17 15 24 9" fill="none" stroke="#fff3d8" stroke-width="2" stroke-linecap="round"/></svg></div>
+            </div>
+            <div class="robot-neck"></div><div class="robot-body"><div class="body-shoulder shoulder-left"></div><div class="body-shoulder shoulder-right"></div><div class="chest-panel"><span class="chest-light"></span><span class="chest-light"></span><span class="chest-light"></span><div class="chest-leaf">✦</div></div><div class="arm arm-left"></div><div class="arm arm-right"></div><div class="hand hand-left"></div><div class="hand hand-right"></div></div>
+          </div>
+          <div class="robot-intro"><span class="eyebrow">YOUR AI COMPANION</span><h1>Hey there, <span id="robotNameTitle">I'm Chin Yantra!</span></h1><p id="robotGreeting">Your curious, kind, and eco-friendly learning buddy. What shall we discover today?</p></div>
+          <div class="robot-footer"><span><i class="mini-leaf">✦</i> Curious minds grow here</span><span class="robot-version">EDITION 01</span></div>
+        </div>
+        <div class="welcome-panel">
+          <div class="welcome-copy"><span class="eyebrow">A LITTLE SMARTER, EVERY DAY</span><h2>Your ideas.<br><span>Infinite possibilities.</span></h2><p>Ask big questions, untangle tricky topics, and build something brilliant — one curious thought at a time.</p></div>
+          <div class="quick-stats"><div><span class="stat-icon green-icon">✳</span><strong>8</strong><small>Learning worlds</small></div><div><span class="stat-icon orange-icon">⌁</span><strong>24/7</strong><small>Curiosity mode</small></div><div><span class="stat-icon green-icon">♧</span><strong>1</strong><small>Planet to protect</small></div></div>
+          <div class="welcome-decoration deco-leaf">✦</div><div class="welcome-decoration deco-ring"></div>
+        </div>
+      </section>
+
+      <section class="subjects-section"><div class="section-heading"><div><span class="eyebrow">PICK YOUR PATH</span><h2>What are we exploring?</h2></div><span class="section-note">Choose a subject to personalise your AI buddy</span></div><div class="subject-grid" id="subjectGrid" aria-label="Learning subjects"></div></section>
+
+      <section class="workspace-grid">
+        <div class="chat-panel panel">
+          <div class="chat-header"><div class="chat-heading"><div class="chat-avatar">✦</div><div><h2 id="chatSubjectTitle">Let's get curious</h2><p><span class="status-dot"></span><span id="chatStatus">Chin Yantra is ready</span></p></div></div><div class="chat-tools"><button class="icon-button" id="newChatBtn" title="Start a new conversation" aria-label="New conversation">＋</button><button class="icon-button" id="clearChatBtn" title="Clear conversation" aria-label="Clear conversation">⌫</button></div></div>
+          <div class="suggestions" id="suggestions" aria-label="Suggested questions"></div>
+          <div class="messages" id="messages" role="log" aria-live="polite" aria-relevant="additions text"><div class="empty-state" id="emptyState"><div class="empty-spark">✧</div><h3>Every great discovery starts with a question.</h3><p>Pick a suggestion above or ask Chin Yantra anything you're learning.</p></div></div>
+          <div class="chat-composer"><label class="sr-only" for="messageInput">Your message</label><textarea id="messageInput" rows="1" placeholder="Ask me anything…" maxlength="8000"></textarea><div class="composer-actions"><div class="composer-left"><button class="tool-button" id="micBtn" title="Speak your question"><span>🎙</span><span>Voice</span></button><button class="tool-button" id="cameraBtn" title="Ask about something you show the camera"><span>◎</span><span>Camera</span></button><button class="tool-button" id="quizBtn" title="Start a short quiz"><span>✳</span><span>Quiz me</span></button></div><button class="send-button" id="sendBtn"><span>Send</span><span>↗</span></button></div><div class="composer-hint"><span>Enter to send · Shift + Enter for a new line</span><span id="charCount">0 / 8000</span></div><div id="capabilityNotice" class="capability-notice hidden" role="status" aria-live="polite"></div></div>
+        </div>
+        <aside class="side-column"><div class="side-card panel"><div class="side-card-title"><span class="side-icon">✧</span><div><h3>Try a learning boost</h3><p>Make tricky things click.</p></div></div><button class="boost-action" id="simplerBtn"><span>☼</span><span><strong>Explain more simply</strong><small>Break it down into easy steps</small></span><span class="arrow">↗</span></button><button class="boost-action" id="exampleBtn"><span>◇</span><span><strong>Give me an example</strong><small>Connect ideas to real life</small></span><span class="arrow">↗</span></button><button class="boost-action" id="quizBoostBtn"><span>✳</span><span><strong>Quiz me</strong><small>Check what you've learned</small></span><span class="arrow">↗</span></button></div>
+          <div class="side-card panel study-export-card"><div class="side-card-title"><span class="side-icon">▤</span><div><h3>Lesson notes</h3><p>Take the conversation with you.</p></div></div><p class="study-export-copy">Turn this chat into a tidy text study sheet with your questions and Chin Yantra’s explanations. Useful for revision or sharing with your class.</p><button class="button button-primary full-button" id="exportNotesBtn" type="button">↓ Export lesson notes</button></div>
+          <div class="side-card monitor-card panel"><div class="monitor-top"><span class="monitor-symbol">◖</span><span class="teacher-chip" id="teacherModeChip">TEACHER TOOL</span></div><h3>Class Monitor</h3><p>Local sound-level monitoring to help teachers notice sustained classroom noise.</p><div class="monitor-status"><span class="status-dot muted-dot" id="monitorDot"></span><span id="monitorSummary">Teacher sign-in required</span></div><button class="button button-dark" id="classMonitorOpen">Open class monitor <span>↗</span></button><small class="privacy-note">Audio levels are analysed locally. No classroom audio is recorded or uploaded.</small></div>
+          <div class="tip-card"><span>✦</span><p><strong>Curiosity tip</strong><br>There's no such thing as a silly question. Asking why is how discovery begins.</p></div>
+        </aside>
+      </section>
+      <footer class="footer"><span>Made for curious minds at <strong>Chinmaya Vidyalaya</strong></span><span>Powered by curiosity <span class="footer-leaf">✦</span> Chin Yantra</span></footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="cameraModal" role="dialog" aria-modal="true" aria-labelledby="cameraTitle"><div class="modal camera-modal"><button class="modal-close" data-close="cameraModal" aria-label="Close camera">×</button><span class="eyebrow">LOOK, LEARN, DISCOVER</span><h2 id="cameraTitle">Show Chin Yantra something</h2><p class="modal-subtitle">Your camera starts only when you choose to activate it. A captured frame is sent to Gemini only when you analyse it.</p><div class="video-wrap"><video id="cameraVideo" autoplay muted playsinline></video><div class="video-placeholder" id="cameraPlaceholder"><span>◎</span><strong>Camera preview will appear here</strong><small>Allow camera access when your browser asks.</small></div></div><label for="cameraQuestion">What would you like to know?</label><textarea id="cameraQuestion" rows="2" maxlength="2000" placeholder="e.g. Explain this diagram or count the visible fingers…"></textarea><div class="modal-actions"><button class="button button-outline" id="startCameraBtn">Start camera</button><button class="button button-outline" id="stopCameraBtn" disabled>Stop camera</button><button class="button button-primary" id="analyseCameraBtn" disabled>Analyse frame ↗</button></div><p class="inline-status" id="cameraStatus" aria-live="polite">Camera is off.</p></div></div>
+
+  <div class="modal-backdrop hidden" id="teacherModal" role="dialog" aria-modal="true" aria-labelledby="teacherTitle"><div class="modal small-modal"><button class="modal-close" data-close="teacherModal" aria-label="Close login">×</button><div class="modal-emblem">♧</div><span class="eyebrow">TEACHER SPACE</span><h2 id="teacherTitle">Welcome, teacher</h2><p class="modal-subtitle">Sign in to open the classroom sound-level monitor.</p><form id="teacherLoginForm"><label for="teacherPasswordInput">Demonstration password</label><div class="password-wrap"><input id="teacherPasswordInput" type="password" autocomplete="current-password" placeholder="Enter password" required><button type="button" id="showPasswordBtn" aria-label="Show password">Show</button></div><p class="form-error" id="loginError" aria-live="polite"></p><button class="button button-primary full-button" type="submit">Enter teacher space ↗</button></form><p class="security-note">Demo only: this browser-side password is not secure authentication and must not protect real accounts.</p></div></div>
+
+  <div class="modal-backdrop hidden" id="monitorModal" role="dialog" aria-modal="true" aria-labelledby="monitorTitle"><div class="modal monitor-modal"><button class="modal-close" data-close="monitorModal" aria-label="Close monitor">×</button><div class="monitor-modal-head"><div><span class="eyebrow">TEACHER TOOLS</span><h2 id="monitorTitle">Classroom sound monitor</h2><p class="modal-subtitle">Measures sound level locally; it does not identify clapping or record speech.</p></div><span class="teacher-chip">TEACHER MODE</span></div><div class="meter-card"><div class="meter-readout"><span id="dbValue">—</span><small>relative level</small></div><div class="meter-track"><div id="meterFill" class="meter-fill"></div></div><div class="meter-labels"><span>Quiet</span><span>Elevated</span><span>Loud</span></div><p id="monitorStateText" class="inline-status" aria-live="polite">Monitoring is off.</p></div><div class="settings-row"><label for="sensitivityRange">Noise sensitivity <strong id="sensitivityLabel">Medium</strong></label><input id="sensitivityRange" type="range" min="1" max="100" value="55"><small>Higher sensitivity alerts at lower sound levels.</small></div><div class="monitor-controls"><button class="button button-primary" id="startMonitorBtn">Start monitoring</button><button class="button button-outline" id="stopMonitorBtn" disabled>Stop monitoring</button><button class="button button-outline" id="muteAlarmBtn">Mute alarm</button></div><p class="privacy-note">Microphone access is requested only after you start monitoring. Sound samples stay in this browser and are not saved or uploaded.</p><button class="button button-dark full-button" id="teacherLogoutBtn">Log out of teacher mode</button></div></div>
+
+  <div class="alarm-overlay hidden" id="alarmOverlay" role="alertdialog" aria-live="assertive" aria-label="Classroom noise alert"><div class="alarm-card"><div class="alarm-pulse">!</div><span class="eyebrow">CLASSROOM REMINDER</span><h2>Let's bring the noise level down.</h2><p>A sustained high sound level was detected. Please settle and listen.</p><div class="alarm-countdown" id="alarmCountdown">Alert will clear shortly</div><div class="alarm-actions"><button class="button button-dark" id="dismissAlarmBtn">Dismiss alert</button><button class="button button-outline" id="alarmMuteQuickBtn">Mute alarm</button></div></div></div>
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+<script>
+(() => {
+  'use strict';
+  const raw = window.APP_CONFIG || {};
+  const fallback = {appName:'CHINMAYA AI',robotName:'Chin Yantra',apiKey:'PASTE YOUR API KEY HERE',model:'gemini-3.5-flash-lite',apiBaseUrl:'https://generativelanguage.googleapis.com/v1beta/models/',language:'en-IN',greeting:'Your curious learning buddy. What shall we discover today?',defaultSubject:'Mathematics',defaultExpression:'idle',reducedMotion:false,theme:{primary:'#176b45',primaryDark:'#104b34',secondary:'#f28a27',background:'#f6f5ed',accent:'#b8d96a',cream:'#fff9e9',text:'#183d2d'},voice:{enabled:true,voiceName:'',language:'en-IN',rate:1,pitch:1.08,volume:.9,speakByDefault:false,showSpeakButton:true,allowSpeechRecognition:true},teacherPassword:'1234',monitor:{noiseSensitivity:55,soundLevelThreshold:.085,triggerDurationMs:1800,repeatCount:3,alertDurationMs:5000,alarmCooldownMs:12000,defaultAlarmEnabled:true,allowTeacherMute:true,sampleIntervalMs:100},interface:{maxHistoryMessages:24,maxOutputTokens:1200,cameraMaxWidth:960,cameraJpegQuality:.82,toastDurationMs:3200},subjects:[]};
+  const cfg = {...fallback,...raw,theme:{...fallback.theme,...(raw.theme||{})},voice:{...fallback.voice,...(raw.voice||{})},monitor:{...fallback.monitor,...(raw.monitor||{})},interface:{...fallback.interface,...(raw.interface||{})},subjects:Array.isArray(raw.subjects)&&raw.subjects.length?raw.subjects:fallback.subjects};
+  const $ = id => document.getElementById(id);
+  const els = Object.fromEntries(['headerStatus','robotStatus','robotNameTitle','robotGreeting','robotStage','subjectGrid','chatSubjectTitle','chatStatus','suggestions','messages','emptyState','messageInput','sendBtn','charCount','voiceToggle','teacherLoginOpen','newChatBtn','clearChatBtn','micBtn','cameraBtn','quizBtn','simplerBtn','exampleBtn','quizBoostBtn','classMonitorOpen','cameraModal','cameraVideo','cameraPlaceholder','cameraQuestion','startCameraBtn','stopCameraBtn','analyseCameraBtn','cameraStatus','teacherModal','teacherLoginForm','teacherPasswordInput','showPasswordBtn','loginError','monitorModal','monitorDot','monitorSummary','dbValue','meterFill','monitorStateText','sensitivityRange','sensitivityLabel','startMonitorBtn','stopMonitorBtn','muteAlarmBtn','teacherLogoutBtn','alarmOverlay','alarmCountdown','dismissAlarmBtn','alarmMuteQuickBtn','toastRegion','capabilityNotice','exportNotesBtn'].map(id=>[id,$(id)]));
+  const state = {subject:cfg.defaultSubject,history:[],busy:false,requestId:0,expression:cfg.defaultExpression||'idle',voiceEnabled:!!cfg.voice.enabled,teacher:false,cameraStream:null,recognition:null,recognitionActive:false,speaking:false,speechUtterance:null,blinkTimer:null,monitoring:false,audioContext:null,analyser:null,micStream:null,monitorFrame:null,overThresholdSince:0,thresholdHits:0,lastAlertAt:0,alertTimer:null,alertCountdownTimer:null,alarmMuted:!cfg.monitor.defaultAlarmEnabled,monitorSensitivity:clamp(Number(cfg.monitor.noiseSensitivity)||55,1,100),cameraBusy:false,shuttingDown:false};
+  function clamp(n,min,max){return Math.min(max,Math.max(min,n));}
+  function safeText(value){return String(value??'');}
+  function validHex(v,fb){return /^#[0-9a-f]{6}$/i.test(v)?v:fb;}
+  function initTheme(){const t=cfg.theme;const root=document.documentElement;root.style.setProperty('--green',validHex(t.primary,fallback.theme.primary));root.style.setProperty('--green-dark',validHex(t.primaryDark,fallback.theme.primaryDark));root.style.setProperty('--orange',validHex(t.secondary,fallback.theme.secondary));root.style.setProperty('--bg',validHex(t.background,fallback.theme.background));root.style.setProperty('--cream',validHex(t.cream,fallback.theme.cream));root.style.setProperty('--text',validHex(t.text,fallback.theme.text));root.style.setProperty('--accent',validHex(t.accent,fallback.theme.accent));if(cfg.reducedMotion)document.documentElement.classList.add('force-reduced-motion');document.title=`${cfg.appName} · ${cfg.robotName}`;}
+  function toast(message,type=''){const node=document.createElement('div');node.className=`toast ${type}`.trim();node.textContent=message;els.toastRegion.append(node);window.setTimeout(()=>node.remove(),Math.max(1500,Number(cfg.interface.toastDurationMs)||3200));}
+  function setExpression(expression,status){const allowed=['idle','thinking','listening','speaking','happy','curious','encouraging','error'];state.expression=allowed.includes(expression)?expression:'idle';els.robotStage.dataset.expression=state.expression;const map={idle:'Your learning buddy',thinking:'Chin Yantra is thinking…',listening:'Chin Yantra is listening…',speaking:'Chin Yantra is speaking…',happy:'That was a great question!',curious:'Curiosity activated!',encouraging:'You can do this!',error:'Let’s try that again'};els.robotStatus.textContent=status||map[state.expression]||map.idle;els.headerStatus.textContent=state.expression==='thinking'?'Thinking…':state.expression==='listening'?'Listening…':state.expression==='speaking'?'Speaking…':state.monitoring?'Monitor active':'Ready to learn';els.chatStatus.textContent=state.expression==='thinking'?'Working on your answer…':state.expression==='listening'?'Listening to your voice…':state.expression==='speaking'?'Reading response aloud':state.busy?'Working…':'Chin Yantra is ready';}
+  function startBlinking(){const schedule=()=>{if(state.shuttingDown)return;const delay=2800+Math.random()*3500;state.blinkTimer=setTimeout(()=>{if(!['thinking','listening','speaking'].includes(state.expression)){els.robotStage.classList.add('blinking');setTimeout(()=>els.robotStage.classList.remove('blinking'),130);}schedule();},delay);};schedule();}
+  function initSubjects(){els.subjectGrid.replaceChildren();cfg.subjects.forEach(subject=>{const b=document.createElement('button');b.type='button';b.className='subject-card';b.setAttribute('aria-pressed',String(subject.name===state.subject));b.dataset.subject=subject.name;const icon=document.createElement('span');icon.className='subject-icon';icon.textContent=subject.icon||'✧';const name=document.createElement('strong');name.textContent=subject.name;const desc=document.createElement('small');desc.textContent=subject.description||'Explore and learn';b.append(icon,name,desc);b.addEventListener('click',()=>selectSubject(subject.name));els.subjectGrid.append(b);});updateSubjectUI();}
+  function subjectData(){return cfg.subjects.find(s=>s.name===state.subject)||cfg.subjects[0]||{name:state.subject,instruction:'Be a friendly, accurate school tutor.',questions:[]};}
+  function updateSubjectUI(){const sub=subjectData();els.chatSubjectTitle.textContent=`Let’s explore ${sub.name}`;els.robotGreeting.textContent=cfg.greeting;els.suggestions.replaceChildren();(sub.questions||[]).slice(0,4).forEach(q=>{const b=document.createElement('button');b.type='button';b.className='suggestion-chip';b.textContent=q;b.addEventListener('click',()=>sendMessage(q));els.suggestions.append(b);});[...els.subjectGrid.querySelectorAll('.subject-card')].forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.subject===state.subject)));}
+  function selectSubject(name){if(!cfg.subjects.some(s=>s.name===name))return;state.subject=name;updateSubjectUI();setExpression('curious');toast(`${name} mode selected.`);setTimeout(()=>{if(state.expression==='curious')setExpression('idle');},1100);}
+  function scrollMessages(){els.messages.scrollTop=els.messages.scrollHeight;}
+  function hideEmpty(){if(els.emptyState)els.emptyState.remove();}
+  function addMessage(role,text,options={}){hideEmpty();const row=document.createElement('div');row.className=`message-row ${role==='user'?'user':'assistant'}`;const avatar=document.createElement('div');avatar.className='message-avatar';avatar.textContent=role==='user'?'●':'✦';const content=document.createElement('div');content.className='message-content';const bubble=document.createElement('div');bubble.className='message-bubble';bubble.textContent=safeText(text);content.append(bubble);const meta=document.createElement('div');meta.className='message-meta';meta.textContent=role==='user'?'You':cfg.robotName;content.append(meta);if(role!=='user'&&!options.typing){const actions=document.createElement('div');actions.className='message-actions';const copy=document.createElement('button');copy.className='message-action';copy.type='button';copy.textContent='Copy';copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(text);toast('Response copied.');}catch{toast('Clipboard access is unavailable in this browser.','warning');}});actions.append(copy);if(cfg.voice.showSpeakButton){const speak=document.createElement('button');speak.className='message-action';speak.type='button';speak.textContent='▶ Speak';speak.addEventListener('click',()=>speakText(text));actions.append(speak);}content.append(actions);}row.append(avatar,content);els.messages.append(row);scrollMessages();return row;}
+  function showTyping(){const row=document.createElement('div');row.className='message-row assistant';row.id='typingRow';const avatar=document.createElement('div');avatar.className='message-avatar';avatar.textContent='✦';const content=document.createElement('div');content.className='message-content';const bubble=document.createElement('div');bubble.className='message-bubble typing-indicator';bubble.setAttribute('aria-label','Chin Yantra is thinking');for(let i=0;i<3;i++)bubble.append(document.createElement('span'));content.append(bubble);row.append(avatar,content);els.messages.append(row);scrollMessages();return row;}
+  function cleanError(status,body){if(status===400)return 'The request was not accepted. Check the selected model and request settings.';if(status===401||status===403)return 'Gemini could not authorise this request. Check your API key and its API access in Google AI Studio.';if(status===404)return `The model “${cfg.model}” was not found or is unavailable to this API key. Change config.js to a currently supported model.`;if(status===429)return 'Gemini is receiving too many requests or a quota was reached. Wait a little and try again.';if(status>=500)return 'The Gemini service is temporarily unavailable. Please try again soon.';try{const j=JSON.parse(body);return j.error?.message||'The request failed. Please check your connection and configuration.';}catch{return 'The request failed. Please check your internet connection and try again.';}}
+  function systemInstruction(){const sub=subjectData();return `You are ${cfg.robotName}, the kind, patient educational AI companion in ${cfg.appName} for school learners. Selected subject: ${sub.name}. Subject-specific guidance: ${sub.instruction||''}\nUse age-appropriate school-level language, explain ideas accurately, encourage learning, and use examples. Do not fabricate school-specific facts, schedules, policies, teachers, or exam dates. If asked, say you do not have access to a school database. Be clear about uncertainty. For normal questions, use a simple explanation, analogy, example, and takeaway when useful. Never claim to see a live camera scene unless an image was provided in this request.`;}
+  function apiReady(){if(!cfg.apiKey||cfg.apiKey==='PASTE YOUR API KEY HERE'||cfg.apiKey.trim().length<10){toast('Setup needed: open config.js and replace PASTE YOUR API KEY HERE with your Gemini API key.','warning');addMessage('assistant','I’m ready to help! To turn on real Gemini answers, open config.js and replace “PASTE YOUR API KEY HERE” with your API key, save the file, and refresh this page. Your key is used only for API requests and is never shown in chat.');return false;}if(!cfg.model||!/^[a-zA-Z0-9._-]+$/.test(cfg.model)){toast('The Gemini model setting in config.js looks invalid.','error');return false;}return true;}
+  async function askGemini(prompt,imageData){if(!apiReady())return null;const contents=state.history.slice(-Math.max(2,Number(cfg.interface.maxHistoryMessages)||24)).map(m=>({role:m.role,parts:[{text:m.text}]}));const parts=[{text:prompt}];if(imageData)parts.push({inlineData:{mimeType:imageData.mimeType,data:imageData.data}});contents.push({role:'user',parts});const url=`${String(cfg.apiBaseUrl||fallback.apiBaseUrl).replace(/\/$/,'')}/${encodeURIComponent(cfg.model)}:generateContent`;const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),60000);try{const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':cfg.apiKey},body:JSON.stringify({systemInstruction:{parts:[{text:systemInstruction()}]},contents,generationConfig:{temperature:.65,maxOutputTokens:clamp(Number(cfg.interface.maxOutputTokens)||1200,128,8192)}}),signal:controller.signal});const body=await response.text();if(!response.ok)throw new Error(cleanError(response.status,body));let data;try{data=JSON.parse(body);}catch{throw new Error('Gemini returned an unreadable response. Please try again.');}const answer=(data.candidates||[]).flatMap(c=>c.content?.parts||[]).map(p=>p.text||'').filter(Boolean).join('\n').trim();if(!answer){const reason=data.promptFeedback?.blockReason;throw new Error(reason?`Gemini could not answer this request (${reason}). Try rephrasing it.`:'Gemini returned no text. Try a different question or model.');}return answer;}catch(err){if(err.name==='AbortError')throw new Error('The request took too long. Check your connection and try again.');throw err;}finally{clearTimeout(timeout);}}
+  async function sendMessage(textOverride,options={}){if(state.busy){toast('One request is already in progress. Please wait.','warning');return;}const text=(textOverride??els.messageInput.value).trim();if(!text&&!options.imageData)return;if(text.length>8000){toast('Please keep your question under 8,000 characters.','warning');return;}if(!options.imageData){addMessage('user',text);els.messageInput.value='';resizeInput();}state.busy=true;const request=++state.requestId;els.sendBtn.disabled=true;setExpression('thinking');const typing=showTyping();try{const answer=await askGemini(text||'Please describe the captured image carefully.',options.imageData);if(request!==state.requestId)return;if(!answer){typing.remove();return;}typing.remove();addMessage('assistant',answer);state.history.push({role:'user',text:text||'Please analyse the image.'},{role:'model',text:answer});state.history=state.history.slice(-Math.max(2,Number(cfg.interface.maxHistoryMessages)||24));setExpression('happy');setTimeout(()=>{if(!state.busy&&state.expression==='happy')setExpression('idle');},1600);if(state.voiceEnabled&&cfg.voice.speakByDefault)speakText(answer);}catch(err){typing.remove();if(request===state.requestId){addMessage('assistant',`I couldn't complete that request. ${err.message||'Please try again.'}`);setExpression('error');toast(err.message||'Request failed.','error');setTimeout(()=>{if(!state.busy&&state.expression==='error')setExpression('idle');},1800);}}finally{if(request===state.requestId){state.busy=false;els.sendBtn.disabled=false;if(['thinking','error'].includes(state.expression))setExpression('idle');}}}
+  function resizeInput(){els.messageInput.style.height='auto';els.messageInput.style.height=Math.min(140,els.messageInput.scrollHeight)+'px';els.charCount.textContent=`${els.messageInput.value.length} / 8000`;}
+  function newChat(){if(state.busy){toast('Wait for the current answer before starting a new chat.','warning');return;}state.history=[];els.messages.replaceChildren();const empty=document.createElement('div');empty.className='empty-state';empty.id='emptyState';const spark=document.createElement('div');spark.className='empty-spark';spark.textContent='✧';const h=document.createElement('h3');h.textContent='Every great discovery starts with a question.';const p=document.createElement('p');p.textContent='Pick a suggestion above or ask Chin Yantra anything you’re learning.';empty.append(spark,h,p);els.messages.append(empty);updateSubjectUI();toast('A fresh conversation is ready.');}
+  function clearChat(){if(!state.history.length){toast('This conversation is already empty.');return;}if(window.confirm('Clear this conversation? This cannot be undone.'))newChat();}
+  function speakText(text){if(!state.voiceEnabled||!cfg.voice.enabled){toast('Voice output is turned off. Enable it with the speaker button.','warning');return;}if(!('speechSynthesis'in window)||!('SpeechSynthesisUtterance'in window)){toast('Speech synthesis is not supported in this browser.','warning');return;}window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);const voices=window.speechSynthesis.getVoices();let chosen=null;if(cfg.voice.voiceName)chosen=voices.find(v=>v.name===cfg.voice.voiceName)||null;if(!chosen&&cfg.voice.language)chosen=voices.find(v=>v.lang.toLowerCase()===cfg.voice.language.toLowerCase())||voices.find(v=>v.lang.toLowerCase().startsWith(cfg.voice.language.split('-')[0].toLowerCase()))||null;if(chosen)utterance.voice=chosen;utterance.lang=chosen?.lang||cfg.voice.language||cfg.language;utterance.rate=clamp(Number(cfg.voice.rate)||1,.5,2);utterance.pitch=clamp(Number(cfg.voice.pitch)||1,.5,2);utterance.volume=clamp(Number(cfg.voice.volume)||.9,0,1);state.speechUtterance=utterance;state.speaking=true;setExpression('speaking');utterance.onboundary=()=>{els.robotStage.classList.add('speaking-boundary');};utterance.onend=()=>{state.speaking=false;state.speechUtterance=null;els.robotStage.classList.remove('speaking-boundary');setExpression('idle');};utterance.onerror=(event)=>{state.speaking=false;state.speechUtterance=null;setExpression('idle');if(event.error!=='canceled'&&event.error!=='interrupted')toast('No audible speech output was available. Check your device volume and speaker connection; the written answer is still available.','warning');};window.speechSynthesis.speak(utterance);}
+  function stopSpeaking(){if('speechSynthesis'in window)window.speechSynthesis.cancel();state.speaking=false;state.speechUtterance=null;setExpression('idle');}
+  function toggleVoice(){if(!('speechSynthesis'in window)||!('SpeechSynthesisUtterance'in window)){toast('Spoken replies are not supported in this browser. You can still read every answer on screen.','warning');return;}state.voiceEnabled=!state.voiceEnabled;els.voiceToggle.textContent=state.voiceEnabled?'🔊':'🔇';els.voiceToggle.setAttribute('aria-pressed',String(state.voiceEnabled));toast(state.voiceEnabled?'Voice output enabled. If you cannot hear it, check your device volume and selected speaker; every reply also appears as text.':'Voice output muted. Text replies will continue normally.');if(!state.voiceEnabled)stopSpeaking();}
+  function startRecognition(){if(!cfg.voice.allowSpeechRecognition){toast('Voice typing is turned off in the app settings. You can type your question instead.','warning');return;}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('This browser does not support voice typing. You can still type your question.','warning');return;}if(state.recognitionActive){state.recognition?.stop();return;}const rec=new SR();state.recognition=rec;rec.lang=cfg.voice.language||cfg.language;rec.interimResults=true;rec.continuous=false;let finalText='';state.recognitionActive=true;els.micBtn.classList.add('listening');setExpression('listening');rec.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const phrase=e.results[i][0].transcript;if(e.results[i].isFinal)finalText+=phrase;else interim+=phrase;}els.messageInput.value=(finalText+interim).trim();resizeInput();};rec.onerror=e=>{state.recognitionActive=false;els.micBtn.classList.remove('listening');if(state.expression==='listening')setExpression('idle');const messages={ 'not-allowed':'Microphone permission was blocked. Allow microphone access in your browser settings, or type instead.','service-not-allowed':'Voice typing is blocked by the browser. You can type instead.','audio-capture':'No working microphone was found. Connect a microphone or type your question.','network':'Voice typing needs an internet connection in this browser. You can type instead.','no-speech':'No speech was detected. Try again or type your question.'};if(e.error!=='aborted')toast(messages[e.error]||`Voice typing could not start (${e.error}). You can type instead.`,'warning');};rec.onend=()=>{state.recognitionActive=false;els.micBtn.classList.remove('listening');if(state.expression==='listening')setExpression('idle');if(finalText.trim())toast('Speech added to the message box. Review it, then press Send.');};try{rec.start();}catch(err){state.recognitionActive=false;els.micBtn.classList.remove('listening');setExpression('idle');toast('Could not start voice typing. Check your microphone permission, or type instead.','warning');}}
+  function showModal(id){$(id).classList.remove('hidden');const focus=$(id).querySelector('input,textarea,button');if(focus)setTimeout(()=>focus.focus(),50);}function hideModal(id){$(id).classList.add('hidden');if(id==='cameraModal')stopCamera();}
+  async function startCamera(){if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){els.cameraStatus.textContent='Camera access needs a secure page (HTTPS) or localhost and a supported browser. You can close this window and continue with typed chat.';toast(els.cameraStatus.textContent,'warning');return;}try{state.cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:cfg.interface.cameraMaxWidth||960}},audio:false});els.cameraVideo.srcObject=state.cameraStream;await els.cameraVideo.play();els.cameraPlaceholder.classList.add('hidden');els.startCameraBtn.disabled=true;els.stopCameraBtn.disabled=false;els.analyseCameraBtn.disabled=false;els.cameraStatus.textContent='Camera is active. A frame is shared with Gemini only when you press Analyse frame.';}catch(err){const messages={ 'NotAllowedError':'Camera permission was denied. Allow camera access in your browser settings, or continue without the camera.','NotFoundError':'No camera was found on this device. You can still ask questions by typing.','NotReadableError':'The camera is busy or unavailable. Close other apps using it and try again.','OverconstrainedError':'This camera cannot meet the requested settings. Try another camera.'};els.cameraStatus.textContent=messages[err.name]||'The camera could not start. Check the connection and browser permission, or continue with typed chat.';toast(els.cameraStatus.textContent,'warning');}}
+  function stopCamera(){if(state.cameraStream){state.cameraStream.getTracks().forEach(t=>t.stop());state.cameraStream=null;}els.cameraVideo.srcObject=null;els.cameraPlaceholder.classList.remove('hidden');els.startCameraBtn.disabled=false;els.stopCameraBtn.disabled=true;els.analyseCameraBtn.disabled=true;els.cameraStatus.textContent='Camera is off.';state.cameraBusy=false;}
+  async function analyseCamera(){if(!state.cameraStream||!els.cameraVideo.videoWidth){toast('Start the camera and wait for the preview before analysing.','warning');return;}if(state.busy||state.cameraBusy)return;const canvas=document.createElement('canvas');const maxW=clamp(Number(cfg.interface.cameraMaxWidth)||960,320,1600);const scale=Math.min(1,maxW/els.cameraVideo.videoWidth);canvas.width=Math.round(els.cameraVideo.videoWidth*scale);canvas.height=Math.round(els.cameraVideo.videoHeight*scale);const ctx=canvas.getContext('2d');ctx.drawImage(els.cameraVideo,0,0,canvas.width,canvas.height);const dataUrl=canvas.toDataURL('image/jpeg',clamp(Number(cfg.interface.cameraJpegQuality)||.82,.4,.95));const imageData={mimeType:'image/jpeg',data:dataUrl.split(',')[1]};const question=els.cameraQuestion.value.trim()||'Describe what is visible in this image. Be careful about uncertainty and do not infer details that are not clearly visible.';hideModal('cameraModal');await sendMessage(question,{imageData});}
+  function loginTeacher(event){event.preventDefault();if(els.teacherPasswordInput.value===String(cfg.teacherPassword)){state.teacher=true;els.teacherPasswordInput.value='';els.loginError.textContent='';hideModal('teacherModal');els.monitorSummary.textContent='Teacher mode enabled';els.monitorDot.classList.remove('muted-dot');els.classMonitorOpen.textContent='Open class monitor ↗';toast('Teacher demonstration mode enabled.');}else{els.loginError.textContent='That password does not match. Try again.';setExpression('error');setTimeout(()=>setExpression('idle'),1000);}}
+  function openMonitor(){if(!state.teacher){showModal('teacherModal');toast('Teacher login is required to use the class monitor.','warning');return;}showModal('monitorModal');updateMonitorControls();}
+  async function startMonitor(){if(!state.teacher){toast('Teacher login is required.','warning');return;}if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){els.monitorStateText.textContent='Microphone monitoring needs HTTPS or localhost and a supported browser. You can still use the other teacher tools.';toast(els.monitorStateText.textContent,'warning');return;}try{state.micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false},video:false});const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(!AudioContextClass)throw new Error('This browser cannot analyse microphone levels. The class monitor is unavailable, but the rest of Chin Yantra still works.');state.audioContext=new AudioContextClass();await state.audioContext.resume();state.analyser=state.audioContext.createAnalyser();state.analyser.fftSize=1024;state.analyser.smoothingTimeConstant=.25;const source=state.audioContext.createMediaStreamSource(state.micStream);source.connect(state.analyser);state.monitoring=true;state.overThresholdSince=0;state.thresholdHits=0;els.startMonitorBtn.disabled=true;els.stopMonitorBtn.disabled=false;els.monitorStateText.textContent='Monitoring live microphone sound levels locally…';els.monitorSummary.textContent='Microphone active · monitoring';els.monitorDot.classList.remove('muted-dot');els.headerStatus.textContent='Monitor active';toast('Class sound monitoring started. Audio stays in this browser.');monitorLoop();}catch(err){stopMonitor();const messages={'NotAllowedError':'Microphone permission was denied. Allow microphone access to use the class monitor.','NotFoundError':'No microphone was found. Connect one to use sound monitoring; the rest of the app remains available.','NotReadableError':'The microphone is busy or unavailable. Close other apps using it and try again.'};const msg=messages[err.name]||err.message||'Could not start microphone monitoring. Check browser permissions.';els.monitorStateText.textContent=msg;toast(msg,'error');}}
+  function thresholdForSensitivity(){const sens=state.monitorSensitivity/100;const base=clamp(Number(cfg.monitor.soundLevelThreshold)||.085,.005,.8);return clamp(base*(1.5-sens*1.15),.008,.9);}
+  function monitorLoop(){if(!state.monitoring||!state.analyser)return;const buffer=new Uint8Array(state.analyser.fftSize);state.analyser.getByteTimeDomainData(buffer);let sum=0;for(let i=0;i<buffer.length;i++){const sample=(buffer[i]-128)/128;sum+=sample*sample;}const rms=Math.sqrt(sum/buffer.length);const scaled=clamp((rms/.25)*100,0,100);els.dbValue.textContent=`${Math.round(scaled)}%`;els.meterFill.style.width=`${scaled}%`;const now=Date.now();const over=rms>thresholdForSensitivity();if(over){if(!state.overThresholdSince)state.overThresholdSince=now;state.thresholdHits++;}else{state.overThresholdSince=0;state.thresholdHits=Math.max(0,state.thresholdHits-1);}const duration=Number(cfg.monitor.triggerDurationMs)||1800;const hits=Math.max(1,Number(cfg.monitor.repeatCount)||3);if(over&&now-state.overThresholdSince>=duration&&state.thresholdHits>=hits&&now-state.lastAlertAt>=(Number(cfg.monitor.alarmCooldownMs)||12000)){triggerAlarm();state.lastAlertAt=now;state.overThresholdSince=0;state.thresholdHits=0;}state.monitorFrame=setTimeout(monitorLoop,clamp(Number(cfg.monitor.sampleIntervalMs)||100,50,500));}
+  function updateMonitorControls(){els.startMonitorBtn.disabled=state.monitoring;els.stopMonitorBtn.disabled=!state.monitoring;els.muteAlarmBtn.disabled=!cfg.monitor.allowTeacherMute;els.muteAlarmBtn.textContent=state.alarmMuted?'Unmute alarm':'Mute alarm';els.alarmMuteQuickBtn.textContent=state.alarmMuted?'Unmute alarm':'Mute alarm';els.sensitivityRange.value=state.monitorSensitivity;els.sensitivityLabel.textContent=state.monitorSensitivity<35?'High':state.monitorSensitivity>70?'Very high':'Medium';}
+  function stopMonitor(){state.monitoring=false;if(state.monitorFrame)clearTimeout(state.monitorFrame);state.monitorFrame=null;state.overThresholdSince=0;state.thresholdHits=0;if(state.micStream){state.micStream.getTracks().forEach(t=>t.stop());state.micStream=null;}if(state.audioContext){state.audioContext.close().catch(()=>{});state.audioContext=null;}state.analyser=null;els.meterFill.style.width='0%';els.dbValue.textContent='—';els.startMonitorBtn.disabled=!state.teacher;els.stopMonitorBtn.disabled=true;els.monitorStateText.textContent='Monitoring is off.';if(state.teacher){els.monitorSummary.textContent='Teacher mode enabled';els.monitorDot.classList.add('muted-dot');}else{els.monitorSummary.textContent='Teacher sign-in required';els.monitorDot.classList.add('muted-dot');}if(!els.monitorModal.classList.contains('hidden'))updateMonitorControls();}
+  function triggerAlarm(){if(!state.monitoring)return;els.alarmOverlay.classList.remove('hidden');let remaining=Math.ceil((Number(cfg.monitor.alertDurationMs)||5000)/1000);els.alarmCountdown.textContent=`Alert will clear in ${remaining} seconds`;if(!state.alarmMuted){playAlarmTone();}if(state.alertTimer)clearTimeout(state.alertTimer);if(state.alertCountdownTimer)clearInterval(state.alertCountdownTimer);state.alertCountdownTimer=setInterval(()=>{remaining--;if(remaining>0)els.alarmCountdown.textContent=`Alert will clear in ${remaining} seconds`;},1000);state.alertTimer=setTimeout(dismissAlarm,Number(cfg.monitor.alertDurationMs)||5000);}
+  function playAlarmTone(){if(state.alarmMuted)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const context=new AC();const osc=context.createOscillator();const gain=context.createGain();osc.type='sine';osc.frequency.value=880;gain.gain.value=.08;osc.connect(gain);gain.connect(context.destination);osc.start();osc.frequency.setValueAtTime(660,context.currentTime+.18);osc.stop(context.currentTime+.36);osc.onended=()=>context.close().catch(()=>{});}catch{/* browser may block sound until user interaction */}}
+  function dismissAlarm(){stopSpeaking();if(state.alertTimer)clearTimeout(state.alertTimer);if(state.alertCountdownTimer)clearInterval(state.alertCountdownTimer);state.alertTimer=null;state.alertCountdownTimer=null;els.alarmOverlay.classList.add('hidden');}
+  function toggleAlarmMute(){if(!cfg.monitor.allowTeacherMute){toast('Alarm muting is disabled in config.js.','warning');return;}state.alarmMuted=!state.alarmMuted;updateMonitorControls();toast(state.alarmMuted?'Alarm sound muted. Visual alerts remain active.':'Alarm sound enabled.');}
+  function logoutTeacher(){stopMonitor();dismissAlarm();state.teacher=false;els.teacherPasswordInput.value='';els.monitorSummary.textContent='Teacher sign-in required';els.monitorDot.classList.add('muted-dot');hideModal('monitorModal');hideModal('teacherModal');toast('Logged out. Classroom monitoring has stopped.');}
+  function addBoost(kind){const last=[...state.history].reverse().find(m=>m.role==='model');if(!last){toast('Ask a question first, then use a learning boost.','warning');return;}const prompts={simpler:'Explain your previous answer more simply for a school student. Use short sentences and define any difficult words.',example:'Give one concrete, everyday example that helps me understand your previous answer.',quiz:'Create a short 3-question quiz based on your previous answer. Ask one question at a time and wait for my answer before revealing the solution.'};sendMessage(prompts[kind]);}
+  function updateCapabilityNotice(){
+    const issues=[];
+    const canGetMedia=!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia);
+    const canRecognise=!!(window.SpeechRecognition||window.webkitSpeechRecognition);
+    const canSpeak=('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window);
+    if(!canGetMedia)issues.push('Camera and classroom microphone access need a supported browser on HTTPS or localhost. You can still use typed chat.');
+    if(!canRecognise)issues.push('Voice typing is not available in this browser. Type your questions instead.');
+    if(!canSpeak)issues.push('Spoken replies are not supported here. Chin Yantra will continue replying in text.');
+    els.capabilityNotice.textContent=issues.join(' ');
+    els.capabilityNotice.classList.toggle('hidden',issues.length===0);
+    if(!canRecognise){els.micBtn.title='Voice typing is unavailable in this browser; type instead';els.micBtn.setAttribute('aria-label','Voice typing unavailable');}
+    if(!canGetMedia){els.cameraBtn.title='Camera requires HTTPS or localhost and a connected camera';}
+    if(!canSpeak){els.voiceToggle.title='Speech output is not supported in this browser; text replies remain available';}
+  }
+  function exportLessonNotes(){
+    const entries=state.history.filter(m=>m&&m.text&&['user','model'].includes(m.role));
+    if(!entries.length){toast('Ask Chin Yantra a question first. Your lesson notes will appear here.','warning');return;}
+    const stamp=new Date().toLocaleString();
+    const lines=['CHINMAYA AI · CHIN YANTRA','LESSON NOTES','Subject: '+state.subject,'Created: '+stamp,'','='.repeat(52),''];
+    for(const item of entries){lines.push(item.role==='user'?'YOUR QUESTION':'CHIN YANTRA');lines.push(String(item.text).trim(),'');lines.push('-'.repeat(42),'');}
+    lines.push('Made with Chin Yantra · Keep learning with curiosity!');
+    const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='Chin-Yantra-'+state.subject.replace(/[^a-z0-9]+/gi,'-')+'-lesson-notes.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Your lesson notes have been exported.');
+  }
+  function bindEvents(){els.sendBtn.addEventListener('click',()=>sendMessage());els.exportNotesBtn.addEventListener('click',exportLessonNotes);els.messageInput.addEventListener('input',resizeInput);els.messageInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});els.newChatBtn.addEventListener('click',newChat);els.clearChatBtn.addEventListener('click',clearChat);els.voiceToggle.addEventListener('click',toggleVoice);els.micBtn.addEventListener('click',startRecognition);els.cameraBtn.addEventListener('click',()=>{els.cameraQuestion.value='';showModal('cameraModal');});els.startCameraBtn.addEventListener('click',startCamera);els.stopCameraBtn.addEventListener('click',stopCamera);els.analyseCameraBtn.addEventListener('click',analyseCamera);els.teacherLoginOpen.addEventListener('click',()=>showModal('teacherModal'));els.teacherLoginForm.addEventListener('submit',loginTeacher);els.showPasswordBtn.addEventListener('click',()=>{const reveal=els.teacherPasswordInput.type==='password';els.teacherPasswordInput.type=reveal?'text':'password';els.showPasswordBtn.textContent=reveal?'Hide':'Show';els.showPasswordBtn.setAttribute('aria-label',reveal?'Hide password':'Show password');});els.classMonitorOpen.addEventListener('click',openMonitor);els.startMonitorBtn.addEventListener('click',startMonitor);els.stopMonitorBtn.addEventListener('click',stopMonitor);els.muteAlarmBtn.addEventListener('click',toggleAlarmMute);els.alarmMuteQuickBtn.addEventListener('click',toggleAlarmMute);els.dismissAlarmBtn.addEventListener('click',dismissAlarm);els.teacherLogoutBtn.addEventListener('click',logoutTeacher);els.sensitivityRange.addEventListener('input',()=>{state.monitorSensitivity=Number(els.sensitivityRange.value);updateMonitorControls();});els.simplerBtn.addEventListener('click',()=>addBoost('simpler'));els.exampleBtn.addEventListener('click',()=>addBoost('example'));els.quizBtn.addEventListener('click',()=>sendMessage('Quiz me on '+state.subject+'. Ask one question at a time, wait for my answer, then give feedback and continue.'));els.quizBoostBtn.addEventListener('click',()=>addBoost('quiz'));document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>hideModal(b.dataset.close)));document.querySelectorAll('.modal-backdrop').forEach(backdrop=>backdrop.addEventListener('click',e=>{if(e.target===backdrop)hideModal(backdrop.id);}));document.addEventListener('keydown',e=>{if(e.key==='Escape'){['cameraModal','teacherModal','monitorModal'].forEach(id=>{if(!$(id).classList.contains('hidden'))hideModal(id);});}});window.addEventListener('pagehide',shutdown);document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.recognitionActive)state.recognition?.stop();});}
+  function shutdown(){state.shuttingDown=true;stopCamera();stopMonitor();stopSpeaking();if(state.recognitionActive)state.recognition?.abort();dismissAlarm();if(state.blinkTimer)clearTimeout(state.blinkTimer);}
+  function init(){initTheme();els.robotNameTitle.textContent=`I'm ${cfg.robotName}!`;els.robotGreeting.textContent=cfg.greeting;els.voiceToggle.textContent=state.voiceEnabled?'🔊':'🔇';els.voiceToggle.setAttribute('aria-pressed',String(state.voiceEnabled));els.sensitivityRange.value=state.monitorSensitivity;initSubjects();bindEvents();startBlinking();setExpression('idle');if(!cfg.voice.enabled)els.voiceToggle.title='Voice output is disabled in config.js';if(!cfg.voice.allowSpeechRecognition)els.micBtn.disabled=true;if(!navigator.mediaDevices?.getUserMedia){els.cameraBtn.title='Camera needs browser support and localhost or HTTPS';}updateCapabilityNotice();updateMonitorControls();}
+  init();
+})();
+
+  </script>
+</body></html>
