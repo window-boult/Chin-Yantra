@@ -1,19 +1,21 @@
+<CodeBlock language="json" editable>
 {
-  "id": "/",
-  "name": "CHINMAYA AI \u00b7 Chin Yantra",
-  "short_name": "Chin Yantra",
-  "description": "A friendly school learning companion from CHINMAYA AI.",
+  "name": "Chinmaya AI — School Learning Companion",
+  "short_name": "Chinmaya AI",
+  "description": "Your intelligent school learning companion.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f6f5ed",
-  "theme_color": "#176b45",
+  "orientation": "any",
+  "background_color": "#f4f7f3",
+  "theme_color": "#123d2b",
   "icons": [
     {
       "src": "logo.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
+</CodeBlock>
