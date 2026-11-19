@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="t d">
+<title id="t">Chinmaya AI spiritual lotus emblem</title><desc id="d">A golden lotus and Om-inspired emblem on a deep green background.</desc>
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0a8"/><stop offset=".55" stop-color="#e6ae3d"/><stop offset="1" stop-color="#a66b16"/></linearGradient><radialGradient id="b"><stop stop-color="#245b3d"/><stop offset="1" stop-color="#09291c"/></radialGradient></defs>
+<rect width="512" height="512" rx="112" fill="url(#b)"/>
+<circle cx="256" cy="250" r="174" fill="none" stroke="#d7ad58" stroke-opacity=".38" stroke-width="3"/>
+<g fill="url(#g)" stroke="#fff0b8" stroke-width="3" stroke-linejoin="round">
+<path d="M256 330C192 300 177 240 256 151c79 89 64 149 0 179Z"/>
+<path d="M244 329C163 322 124 274 133 207c62 21 102 62 111 122Z"/>
+<path d="M268 329c81-7 120-55 111-122-62 21-102 62-111 122Z"/>
+<path d="M232 341c-69 16-119-9-143-67 66-6 115 18 143 67Z"/>
+<path d="M280 341c69 16 119-9 143-67-66-6-115 18-143 67Z"/>
+<path d="M256 339c-49 47-104 46-151 9 53-34 105-37 151-9Z"/>
+<path d="M256 339c49 47 104 46 151 9-53-34-105-37-151-9Z"/>
+</g>
+<path d="M256 170v171" stroke="#fff3c4" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+<path d="M173 373q83 48 166 0" fill="none" stroke="url(#g)" stroke-width="8" stroke-linecap="round"/>
+<circle cx="256" cy="390" r="7" fill="#f6d477"/>
+</svg>

@@ -1,0 +1,10 @@
+{
+  "name": "Chinmaya AI — The School Learning Companion",
+  "short_name": "Chinmaya AI",
+  "description": "A friendly learning companion for Chinmaya Vidyalaya students.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#09291c",
+  "theme_color": "#123d2b",
+  "icons": [{ "src": "logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
